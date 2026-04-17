@@ -4,40 +4,59 @@
 
 @layer base {
   html {
-    color-scheme: dark;
+    color-scheme: light;
   }
   body {
-    @apply bg-bg-base text-white font-sans antialiased;
+    @apply bg-bg-base text-text-primary font-sans antialiased;
+    font-weight: 300;
     min-height: 100vh;
   }
   ::selection {
-    background: rgba(0, 240, 192, 0.25);
-    color: white;
+    background: rgba(19, 214, 89, 0.25);
+    color: #000;
+  }
+  :focus-visible {
+    outline: 2px solid #13d659;
+    outline-offset: 2px;
   }
 }
 
 @layer components {
   .card {
-    @apply rounded-xl border border-border bg-bg-card p-6 transition-shadow;
+    @apply rounded-md border border-border bg-white p-6 shadow-card transition-shadow duration-fast;
   }
-  .card:hover {
-    @apply shadow-glow;
+  .card-invert {
+    @apply rounded-md border border-border-invert bg-bg-invert p-6 text-text-invert transition-shadow duration-fast;
   }
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-lg bg-accent px-4 py-2
-           font-semibold text-bg-base transition hover:bg-accent-dim;
+    @apply inline-flex items-center justify-center rounded-xs bg-bg-invert px-5 py-2.5
+           font-medium text-text-invert transition duration-instant hover:bg-text-secondary;
+  }
+  .btn-accent {
+    @apply inline-flex items-center justify-center rounded-xs bg-accent px-5 py-2.5
+           font-semibold text-bg-invert transition duration-instant hover:bg-accent-dim;
   }
   .btn-outline {
-    @apply inline-flex items-center justify-center rounded-lg border border-accent
-           px-4 py-2 font-semibold text-accent transition hover:bg-accent/10;
+    @apply inline-flex items-center justify-center rounded-xs border border-border-strong
+           px-5 py-2.5 font-medium text-text-primary transition duration-instant hover:border-bg-invert hover:bg-bg-card;
   }
   .stat-number {
-    @apply text-3xl font-bold text-white tabular-nums;
+    @apply font-semibold text-text-primary tabular-nums;
+    font-size: 58.72px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
   }
   .stat-label {
-    @apply text-sm text-muted uppercase tracking-wide;
+    @apply text-muted uppercase tracking-wide;
+    font-size: 14px;
   }
   .input {
-    @apply w-full rounded-lg border border-border bg-bg-base px-3 py-2 text-white outline-none focus:border-accent;
+    @apply w-full rounded-xs border border-border bg-white px-3 py-2 text-text-primary outline-none focus:border-bg-invert;
+  }
+  .section {
+    @apply space-y-6;
+  }
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.18em] text-muted;
   }
 }
