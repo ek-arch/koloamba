@@ -8,9 +8,9 @@ export default async function LandingPage() {
 
   return (
     <div className="space-y-24 pb-24">
-      {/* Hero — black inverse section, kolo.xyz style */}
-      <section className="-mx-6 -mt-10 bg-bg-invert px-6 py-24 text-text-invert sm:py-32">
-        <div className="mx-auto max-w-5xl space-y-8">
+      {/* Hero — full-bleed black inverse section, kolo.xyz style */}
+      <section className="relative left-1/2 right-1/2 -mx-[50vw] -mt-10 w-screen bg-bg-invert py-24 text-text-invert sm:py-32">
+        <div className="mx-auto max-w-6xl space-y-8 px-6">
           <p className="eyebrow text-accent">
             Genesis Sprint · 1-month campaign
           </p>
