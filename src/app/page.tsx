@@ -8,32 +8,25 @@ export default async function LandingPage() {
 
   return (
     <div className="space-y-24 pb-24">
-      {/* Hero — full-bleed black inverse section, kolo.xyz style */}
-      <section className="relative left-1/2 right-1/2 -mx-[50vw] -mt-10 w-screen bg-bg-invert py-24 text-text-invert sm:py-32">
-        <div className="mx-auto max-w-6xl space-y-8 px-6">
-          <p className="eyebrow text-accent">
-            Genesis Sprint · 1-month campaign
-          </p>
-          <h1 className="text-5xl font-semibold leading-[1.02] tracking-tight sm:text-display-sm lg:text-display-md">
-            Earn rewards for content about <span className="text-accent">Kolo</span>.
-          </h1>
-          <p className="max-w-2xl text-lg text-white/70">
-            Join the ambassador program. Submit your posts, get scored on reach and credibility,
-            and earn your share of the reward pool.
-          </p>
-          <div className="flex flex-wrap gap-3 pt-4">
-            {loggedIn ? (
-              <a href="/dashboard" className="btn-accent">Go to dashboard →</a>
-            ) : (
-              <SignInButton className="btn-accent">Join with X →</SignInButton>
-            )}
-            <a
-              href="/leaderboard"
-              className="inline-flex items-center justify-center rounded-xs border border-white/20 px-5 py-2.5 font-medium text-white transition hover:border-white hover:bg-white/5"
-            >
-              View leaderboard
-            </a>
-          </div>
+      {/* Hero — light, kolo.xyz style */}
+      <section className="pt-8 space-y-8">
+        <p className="eyebrow text-accent">
+          Genesis Sprint · 1-month campaign
+        </p>
+        <h1 className="text-5xl font-semibold leading-[1.02] tracking-tight text-text-primary sm:text-display-sm lg:text-display-md">
+          Earn rewards for content about <span className="text-accent">Kolo</span>.
+        </h1>
+        <p className="max-w-2xl text-lg text-text-tertiary">
+          Join the ambassador program. Submit your posts, get scored on reach and credibility,
+          and earn your share of the reward pool.
+        </p>
+        <div className="flex flex-wrap gap-3 pt-4">
+          {loggedIn ? (
+            <a href="/dashboard" className="btn-primary">Go to dashboard →</a>
+          ) : (
+            <SignInButton className="btn-primary">Join with X →</SignInButton>
+          )}
+          <a href="/leaderboard" className="btn-outline">View leaderboard</a>
         </div>
       </section>
 
@@ -93,7 +86,7 @@ export default async function LandingPage() {
           <p className="text-text-tertiary">
             Your share of the pool is proportional to your weighted score vs everyone else&apos;s.
           </p>
-          <pre className="overflow-x-auto rounded-xs bg-bg-invert px-4 py-3 text-sm text-accent">
+          <pre className="overflow-x-auto rounded-xs bg-bg-card border border-border px-4 py-3 text-sm text-text-primary">
 {`Reward = (S × M) / Σ(S × M) × Pool
 
 S = your total points (capped at 100)
@@ -107,15 +100,15 @@ Pool = total reward pool for the sprint`}
         </div>
       </section>
 
-      {/* CTA — inverse */}
-      <section className="card-invert text-center">
+      {/* CTA */}
+      <section className="card text-center">
         <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Ready to join?</h2>
-        <p className="mt-3 text-white/70">Sign in with X and start submitting.</p>
+        <p className="mt-3 text-text-tertiary">Sign in with X and start submitting.</p>
         <div className="mt-6 flex justify-center">
           {loggedIn ? (
-            <a href="/dashboard" className="btn-accent">Go to dashboard →</a>
+            <a href="/dashboard" className="btn-primary">Go to dashboard →</a>
           ) : (
-            <SignInButton className="btn-accent">Join with X →</SignInButton>
+            <SignInButton className="btn-primary">Join with X →</SignInButton>
           )}
         </div>
       </section>
