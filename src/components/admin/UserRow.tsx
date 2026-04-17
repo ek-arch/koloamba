@@ -66,7 +66,7 @@ export function UserRow({ user, canChangeRole }: { user: User; canChangeRole: bo
             unoptimized
           />
         ) : (
-          <div className="h-9 w-9 rounded-full bg-bg-base" />
+          <div className="h-9 w-9 rounded-full bg-bg-card" />
         )}
         <div className="min-w-0">
           <div className="truncate font-medium">{user.twitter_name ?? user.twitter_handle}</div>
@@ -79,7 +79,7 @@ export function UserRow({ user, canChangeRole }: { user: User; canChangeRole: bo
         <select
           value={tier}
           onChange={(e) => setTier(e.target.value as Tier)}
-          className="mt-1 w-full rounded-lg border border-border bg-bg-base px-2 py-1.5 capitalize outline-none focus:border-accent"
+          className="mt-1 w-full rounded-xs border border-border bg-white px-2 py-1.5 capitalize outline-none focus:border-bg-invert"
         >
           {TIERS.map((t) => <option key={t} value={t}>{t}</option>)}
         </select>
@@ -92,7 +92,7 @@ export function UserRow({ user, canChangeRole }: { user: User; canChangeRole: bo
           min="0"
           value={oldPoints}
           onChange={(e) => setOldPoints(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-border bg-bg-base px-2 py-1.5 font-mono outline-none focus:border-accent"
+          className="mt-1 w-full rounded-xs border border-border bg-white px-2 py-1.5 font-mono outline-none focus:border-bg-invert"
         />
       </label>
 
@@ -102,7 +102,7 @@ export function UserRow({ user, canChangeRole }: { user: User; canChangeRole: bo
           value={role}
           disabled={!canChangeRole}
           onChange={(e) => setRole(e.target.value as Role)}
-          className="mt-1 w-full rounded-lg border border-border bg-bg-base px-2 py-1.5 capitalize outline-none focus:border-accent disabled:opacity-50"
+          className="mt-1 w-full rounded-xs border border-border bg-white px-2 py-1.5 capitalize outline-none focus:border-bg-invert disabled:opacity-50"
         >
           {ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
         </select>

@@ -51,8 +51,8 @@ export default async function ReviewPage({
             href={`/admin/review?status=${t.value}`}
             className={`-mb-px border-b-2 px-4 py-2 text-sm font-medium transition ${
               t.value === status
-                ? 'border-accent text-white'
-                : 'border-transparent text-muted hover:text-white'
+                ? 'border-bg-invert text-text-primary'
+                : 'border-transparent text-text-tertiary hover:text-text-primary'
             }`}
           >
             {t.label}

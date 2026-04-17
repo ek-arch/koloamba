@@ -48,7 +48,7 @@ export function SubmitForm() {
           placeholder="https://x.com/yourhandle/status/1234567890"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          className="w-full rounded-lg border border-border bg-bg-base px-4 py-2.5 text-white placeholder:text-muted focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+          className="w-full rounded-xs border border-border bg-white px-4 py-2.5 text-text-primary placeholder:text-muted focus:border-bg-invert focus:outline-none focus:ring-1 focus:ring-accent"
         />
         <p className="mt-1 text-xs text-muted">
           Paste a tweet URL you authored. Only X/Twitter is supported right now.

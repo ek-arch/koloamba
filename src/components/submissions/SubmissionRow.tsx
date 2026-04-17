@@ -31,7 +31,7 @@ export function SubmissionRow({ submission: s }: { submission: Submission }) {
       <div className="flex gap-6 text-right">
         <div>
           <div className="stat-label">Score</div>
-          <div className="mt-1 text-xl font-bold tabular-nums text-white">
+          <div className="mt-1 text-xl font-bold tabular-nums text-text-primary">
             {Number(s.final_score).toFixed(1)}
           </div>
         </div>

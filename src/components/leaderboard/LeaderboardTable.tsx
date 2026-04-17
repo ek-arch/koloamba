@@ -42,7 +42,7 @@ export function LeaderboardTable({ rows, totalWeighted, pool, currentUserId }: P
               <tr
                 key={row.id}
                 className={`border-b border-border/60 last:border-0 ${
-                  isMe ? 'bg-accent/5' : 'hover:bg-bg-base/40'
+                  isMe ? 'bg-accent/10' : 'hover:bg-bg-card'
                 }`}
               >
                 <td className="px-4 py-3 font-mono text-muted">{i + 1}</td>
@@ -58,7 +58,7 @@ export function LeaderboardTable({ rows, totalWeighted, pool, currentUserId }: P
                         unoptimized
                       />
                     ) : (
-                      <div className="h-8 w-8 rounded-full bg-bg-base" />
+                      <div className="h-8 w-8 rounded-full bg-bg-card" />
                     )}
                     <div>
                       <div className="font-medium">
@@ -81,7 +81,7 @@ export function LeaderboardTable({ rows, totalWeighted, pool, currentUserId }: P
                 <td className="px-4 py-3 text-right font-mono text-muted">
                   {row.approved_submissions}
                 </td>
-                <td className="px-4 py-3 text-right font-mono text-accent">
+                <td className="px-4 py-3 text-right font-mono font-semibold text-text-primary">
                   {pool > 0 ? formatUsd(projected) : '—'}
                 </td>
               </tr>

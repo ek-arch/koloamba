@@ -101,7 +101,7 @@ export function ReviewRow({ submission }: { submission: ReviewSubmission }) {
               unoptimized
             />
           ) : (
-            <div className="h-10 w-10 rounded-full bg-bg-base" />
+            <div className="h-10 w-10 rounded-full bg-bg-card" />
           )}
           <div>
             <div className="font-medium">{u?.twitter_name ?? u?.twitter_handle ?? '—'}</div>
@@ -126,7 +126,7 @@ export function ReviewRow({ submission }: { submission: ReviewSubmission }) {
         {submission.post_url}
       </a>
 
-      <div className="grid grid-cols-2 gap-3 rounded-lg bg-bg-base/60 px-3 py-2 text-xs sm:grid-cols-5">
+      <div className="grid grid-cols-2 gap-3 rounded-xs bg-bg-card px-3 py-2 text-xs sm:grid-cols-5">
         <Metric label="Likes" value={submission.likes} />
         <Metric label="Retweets" value={submission.retweets} />
         <Metric label="Replies" value={submission.replies} />
@@ -140,7 +140,7 @@ export function ReviewRow({ submission }: { submission: ReviewSubmission }) {
       <div className="grid gap-3 sm:grid-cols-[1fr_2fr_auto]">
         <label className="text-sm">
           <span className="stat-label">Auto-score</span>
-          <div className="mt-1 rounded-lg border border-border bg-bg-base px-3 py-2 font-mono">
+          <div className="mt-1 rounded-xs border border-border bg-bg-card px-3 py-2 font-mono">
             {Number(submission.auto_score).toFixed(2)}
           </div>
         </label>
@@ -153,7 +153,7 @@ export function ReviewRow({ submission }: { submission: ReviewSubmission }) {
             value={score}
             onChange={(e) => setScore(e.target.value)}
             placeholder="Leave blank to use auto-score"
-            className="mt-1 w-full rounded-lg border border-border bg-bg-base px-3 py-2 font-mono text-white outline-none focus:border-accent"
+            className="mt-1 w-full rounded-xs border border-border bg-white px-3 py-2 font-mono text-text-primary outline-none focus:border-bg-invert"
           />
         </label>
         <div className="flex flex-wrap items-end gap-2">
@@ -192,7 +192,7 @@ export function ReviewRow({ submission }: { submission: ReviewSubmission }) {
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Optional note for the ambassador"
-          className="mt-1 w-full rounded-lg border border-border bg-bg-base px-3 py-2 text-white outline-none focus:border-accent"
+          className="mt-1 w-full rounded-xs border border-border bg-white px-3 py-2 text-text-primary outline-none focus:border-bg-invert"
         />
       </label>
 
