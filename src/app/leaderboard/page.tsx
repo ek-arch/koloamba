@@ -1,9 +1,10 @@
 import { auth } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase';
 import { LeaderboardTable } from '@/components/leaderboard/LeaderboardTable';
+import { AutoRefresh } from '@/components/leaderboard/AutoRefresh';
 import type { Campaign, LeaderboardRow } from '@/types';
 
-export const revalidate = 30;
+export const revalidate = 0;
 
 export default async function LeaderboardPage() {
   const session = await auth();
@@ -57,6 +58,8 @@ export default async function LeaderboardPage() {
         pool={pool}
         currentUserId={session?.user?.id}
       />
+
+      <AutoRefresh />
     </div>
   );
 }

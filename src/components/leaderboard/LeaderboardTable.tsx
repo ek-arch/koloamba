@@ -20,8 +20,8 @@ export function LeaderboardTable({ rows, totalWeighted, pool, currentUserId }: P
   }
 
   return (
-    <div className="card overflow-hidden p-0">
-      <table className="w-full text-sm">
+    <div className="card overflow-x-auto p-0">
+      <table className="w-full min-w-[720px] text-sm">
         <thead className="border-b border-border text-xs uppercase tracking-wider text-muted">
           <tr>
             <th className="px-4 py-3 text-left">#</th>

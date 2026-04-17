@@ -1,4 +1,5 @@
 import { TierBadge } from '@/components/dashboard/TierBadge';
+import { RefreshScoreButton } from '@/components/dashboard/RefreshScoreButton';
 import type { User } from '@/types';
 
 export function ProfileCard({ user }: { user: User }) {
@@ -26,6 +27,9 @@ export function ProfileCard({ user }: { user: User }) {
       <div className="hidden text-right sm:block">
         <div className="stat-label">TwitterScore</div>
         <div className="stat-number mt-1">{Number(user.twitter_score).toFixed(1)}</div>
+        <div className="mt-1">
+          <RefreshScoreButton />
+        </div>
       </div>
     </div>
   );
