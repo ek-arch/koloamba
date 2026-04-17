@@ -22,9 +22,9 @@ export default async function LandingPage() {
         </p>
         <div className="flex flex-wrap gap-3 pt-4">
           {loggedIn ? (
-            <a href="/dashboard" className="btn-primary">Go to dashboard →</a>
+            <a href="/dashboard" className="btn-accent">Go to dashboard →</a>
           ) : (
-            <SignInButton className="btn-primary">Join with X →</SignInButton>
+            <SignInButton className="btn-accent">Join with X →</SignInButton>
           )}
           <a href="/leaderboard" className="btn-outline">View leaderboard</a>
         </div>
@@ -106,9 +106,9 @@ Pool = total reward pool for the sprint`}
         <p className="mt-3 text-text-tertiary">Sign in with X and start submitting.</p>
         <div className="mt-6 flex justify-center">
           {loggedIn ? (
-            <a href="/dashboard" className="btn-primary">Go to dashboard →</a>
+            <a href="/dashboard" className="btn-accent">Go to dashboard →</a>
           ) : (
-            <SignInButton className="btn-primary">Join with X →</SignInButton>
+            <SignInButton className="btn-accent">Join with X →</SignInButton>
           )}
         </div>
       </section>
