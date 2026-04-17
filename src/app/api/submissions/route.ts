@@ -1,13 +1,12 @@
 // POST /api/submissions — create a new submission from a post URL.
 // GET  /api/submissions — list current user's submissions (most recent first).
-//
-// Phase 2: URL parsing + ownership hint + duplicate check + insert.
-// Phase 3 will plug in the real tweet-engagement fetcher and auto-score.
 
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase';
 import { parseSubmissionUrl, UrlParseError } from '@/lib/url-parser';
+import { fetchTweetEngagement } from '@/lib/tweet-fetcher';
+import { computeAutoScore } from '@/lib/scoring';
 import type { Submission } from '@/types';
 
 function err(message: string, status: number) {
@@ -54,6 +53,28 @@ export async function POST(req: Request) {
     .maybeSingle();
   if (existing.data) return err('You have already submitted this post', 409);
 
+  // Fetch engagement metrics (stub until a scraping provider is wired).
+  // If the fetcher returns an authoritative author handle, enforce ownership.
+  const engagement = await fetchTweetEngagement(parsed.postId);
+  if (
+    engagement.authorHandle &&
+    engagement.authorHandle.toLowerCase() !== session.user.handle.toLowerCase()
+  ) {
+    return err(
+      `This tweet was posted by @${engagement.authorHandle}, not your account`,
+      400,
+    );
+  }
+
+  const { data: userRow } = await admin
+    .from('users')
+    .select('twitter_score')
+    .eq('id', session.user.id)
+    .maybeSingle();
+  const twitterScore = Number(userRow?.twitter_score ?? 0);
+
+  const score = computeAutoScore(engagement, twitterScore);
+
   const { data, error } = await admin
     .from('submissions')
     .insert({
@@ -62,6 +83,13 @@ export async function POST(req: Request) {
       post_url: parsed.canonicalUrl,
       post_id:  parsed.postId,
       status:   'pending',
+      likes:    engagement.likes,
+      retweets: engagement.retweets,
+      replies:  engagement.replies,
+      views:    engagement.views,
+      engagement_rate: score.engagementRate,
+      auto_score:      score.autoScore,
+      fetched_at:      new Date().toISOString(),
     })
     .select('*')
     .single();

@@ -6,6 +6,7 @@
 import NextAuth from 'next-auth';
 import Twitter from 'next-auth/providers/twitter';
 import { supabaseAdmin } from './supabase';
+import { fetchTwitterScore } from './twitter-score';
 import type { Role } from '@/types';
 
 declare module 'next-auth' {
@@ -56,6 +57,28 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           },
           { onConflict: 'twitter_id' }
         );
+
+      // Hydrate TwitterScore on first sign-in if we haven't fetched one yet.
+      // Fire-and-forget — don't block login if the external API is slow/down.
+      const { data: existing } = await admin
+        .from('users')
+        .select('twitter_score_updated_at')
+        .eq('twitter_id', raw.id)
+        .maybeSingle();
+      if (!existing?.twitter_score_updated_at) {
+        void (async () => {
+          const result = await fetchTwitterScore(raw.username);
+          if (result) {
+            await admin
+              .from('users')
+              .update({
+                twitter_score: result.score,
+                twitter_score_updated_at: new Date().toISOString(),
+              })
+              .eq('twitter_id', raw.id);
+          }
+        })();
+      }
 
       return true;
     },
