@@ -5,6 +5,7 @@ import { SignInButton, SignOutButton } from '@/components/auth/SignInButton';
 export async function Navbar() {
   const session = await auth();
   const loggedIn = !!session?.user?.id;
+  const isStaff = loggedIn && (session!.user.role === 'moderator' || session!.user.role === 'admin');
 
   return (
     <header className="border-b border-border bg-bg-base/80 backdrop-blur sticky top-0 z-40">
@@ -22,6 +23,11 @@ export async function Navbar() {
               <Link href="/dashboard" className="text-muted hover:text-white transition">
                 Dashboard
               </Link>
+              {isStaff && (
+                <Link href="/admin/review" className="text-accent hover:text-white transition">
+                  Admin
+                </Link>
+              )}
               <span className="hidden text-muted sm:inline">
                 @{session!.user.handle}
               </span>
