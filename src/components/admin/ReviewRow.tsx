@@ -41,6 +41,21 @@ export function ReviewRow({ submission }: { submission: ReviewSubmission }) {
     return true;
   }
 
+  function onRefetch() {
+    setErr(null);
+    startTransition(async () => {
+      const res = await fetch(`/api/admin/submissions/${submission.id}/refetch`, {
+        method: 'POST',
+      });
+      const json = await res.json();
+      if (!res.ok || json.error) {
+        setErr(json.error ?? 'Refetch failed');
+        return;
+      }
+      router.refresh();
+    });
+  }
+
   function onApprove() {
     startTransition(async () => {
       const body: Record<string, unknown> = { status: 'approved' };
@@ -141,7 +156,16 @@ export function ReviewRow({ submission }: { submission: ReviewSubmission }) {
             className="mt-1 w-full rounded-lg border border-border bg-bg-base px-3 py-2 font-mono text-white outline-none focus:border-accent"
           />
         </label>
-        <div className="flex items-end gap-2">
+        <div className="flex flex-wrap items-end gap-2">
+          <button
+            type="button"
+            onClick={onRefetch}
+            disabled={pending}
+            className="btn-outline px-3 py-2 text-sm disabled:opacity-50"
+            title="Re-pull engagement metrics and recompute auto-score"
+          >
+            Refetch
+          </button>
           <button
             type="button"
             onClick={onApprove}
