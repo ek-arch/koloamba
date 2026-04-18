@@ -1,13 +1,41 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { detectPlatformFromUrl } from '@/lib/url-parser';
+import type { Platform } from '@/types';
+
+const PLATFORMS: { k: Platform; label: string; placeholder: string; hint: string }[] = [
+  {
+    k: 'x',
+    label: 'X',
+    placeholder: 'https://x.com/yourhandle/status/1234567890',
+    hint: 'Auto-scored from likes, retweets, replies, views × your TwitterScore.',
+  },
+  {
+    k: 'reddit',
+    label: 'Reddit',
+    placeholder: 'https://www.reddit.com/r/subname/comments/abc123/title/',
+    hint: 'Auto-scored from ups + comments × your Reddit karma. Link u/ on the dashboard first.',
+  },
+  {
+    k: 'telegram',
+    label: 'Telegram',
+    placeholder: 'https://t.me/channel/123  or  t.me/channel/123?comment=456',
+    hint: 'Scored manually by a moderator — posts in public channels, comments in groups, all work.',
+  },
+];
 
 export function SubmitForm() {
   const router = useRouter();
   const [url, setUrl] = useState('');
+  const [manualPlatform, setManualPlatform] = useState<Platform | null>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
+
+  const detected = useMemo(() => detectPlatformFromUrl(url), [url]);
+  const active: Platform = manualPlatform ?? detected ?? 'x';
+  const activeMeta = PLATFORMS.find((p) => p.k === active)!;
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -37,6 +65,20 @@ export function SubmitForm() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
+      {/* Platform chips — auto-highlight from URL; user can click to override */}
+      <div className="lb-filters" style={{ marginBottom: 0 }}>
+        {PLATFORMS.map((p) => (
+          <button
+            key={p.k}
+            type="button"
+            className={`chip${active === p.k ? ' active' : ''}`}
+            onClick={() => setManualPlatform(p.k)}
+          >
+            {p.label}
+          </button>
+        ))}
+      </div>
+
       <div>
         <label htmlFor="url" className="mb-2 block text-sm font-semibold text-muted">
           Post URL
@@ -45,14 +87,16 @@ export function SubmitForm() {
           id="url"
           type="url"
           required
-          placeholder="https://x.com/yourhandle/status/1234567890"
+          placeholder={activeMeta.placeholder}
           value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          className="w-full rounded-xs border border-border bg-white px-4 py-2.5 text-text-primary placeholder:text-muted focus:border-bg-invert focus:outline-none focus:ring-1 focus:ring-accent"
+          onChange={(e) => {
+            setUrl(e.target.value);
+            // Let URL drive the chip again once the user types
+            setManualPlatform(null);
+          }}
+          className="w-full rounded-xs border border-border bg-white px-4 py-2.5 font-mono text-text-primary placeholder:text-muted focus:border-bg-invert focus:outline-none focus:ring-1 focus:ring-accent"
         />
-        <p className="mt-1 text-xs text-muted">
-          Paste a tweet URL you authored. Only X/Twitter is supported right now.
-        </p>
+        <p className="mt-1 text-xs text-muted">{activeMeta.hint}</p>
       </div>
 
       <button type="submit" disabled={busy} className="btn-primary disabled:opacity-50">

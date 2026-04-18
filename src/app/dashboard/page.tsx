@@ -2,8 +2,8 @@ import Link from 'next/link';
 import { getCurrentUser } from '@/lib/session';
 import { supabaseAdmin } from '@/lib/supabase';
 import { RewardCalculator } from '@/components/dashboard/RewardCalculator';
-import { TelegramCard } from '@/components/dashboard/TelegramCard';
-import type { Campaign, LeaderboardRow, Submission, Tier } from '@/types';
+import { SocialLinksCard } from '@/components/dashboard/SocialLinksCard';
+import type { Campaign, LeaderboardRow, Platform, Submission, Tier } from '@/types';
 
 export const revalidate = 0;
 
@@ -18,6 +18,12 @@ const TIER_LABEL: Record<Tier, string> = {
   bronze: 'Bronze',
   silver: 'Silver',
   gold: 'Gold',
+};
+
+const PLATFORM_LABEL: Record<Platform, string> = {
+  x:        'X',
+  reddit:   'Reddit',
+  telegram: 'Telegram',
 };
 
 function nextTier(current: Tier): Tier | null {
@@ -105,8 +111,12 @@ export default async function DashboardPage() {
   }
 
   function shortText(url: string) {
-    // post_url is the tweet URL — strip protocol + host for a tidier cell
-    return url.replace(/^https?:\/\/(www\.|mobile\.)?(x|twitter)\.com\//, '').slice(0, 100);
+    // Strip protocol + common host prefix for a tidier cell.
+    return url
+      .replace(/^https?:\/\/(www\.|mobile\.|old\.|new\.|m\.|np\.)?(x|twitter|reddit)\.com\//, '')
+      .replace(/^https?:\/\/t\.me\//, '')
+      .replace(/^https?:\/\/redd\.it\//, '')
+      .slice(0, 100);
   }
 
   return (
@@ -189,14 +199,16 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* ----- Telegram link + token balance ----- */}
+        {/* ----- Social links (Telegram token balance + Reddit karma) ----- */}
         <div style={{ marginTop: 24 }}>
-          <TelegramCard
-            initialHandle={user.telegram_handle}
-            // TODO: when the Kolo replica DB is wired, fetch balance by
+          <SocialLinksCard
+            telegramHandle={user.telegram_handle}
+            // TODO: when the Kolo replica DB is wired, look up balance by
             // user.telegram_handle and pass here. Until then: null = not
             // available / not yet synced.
-            balance={null}
+            tokenBalance={null}
+            redditUsername={user.reddit_username}
+            redditKarma={Number(user.reddit_karma ?? 0)}
           />
         </div>
 
@@ -227,12 +239,28 @@ export default async function DashboardPage() {
                 });
                 return (
                   <div key={s.id} className="sub-row">
-                    <div className="sub-text">
+                    <div className="sub-text" style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                      <span
+                        className="mono-sm"
+                        style={{
+                          borderRadius: 'var(--radius-xs)',
+                          border: '1px solid var(--line-2)',
+                          padding: '2px 6px',
+                          fontSize: 10,
+                          letterSpacing: '0.08em',
+                          textTransform: 'uppercase',
+                          color: 'var(--ink)',
+                          lineHeight: 1.3,
+                          flex: 'none',
+                        }}
+                      >
+                        {PLATFORM_LABEL[s.platform]}
+                      </span>
                       <a
                         href={s.post_url}
                         target="_blank"
                         rel="noreferrer noopener"
-                        style={{ color: 'inherit' }}
+                        style={{ color: 'inherit', flex: 1, minWidth: 0 }}
                       >
                         {shortText(s.post_url)}
                       </a>

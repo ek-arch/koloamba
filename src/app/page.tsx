@@ -96,12 +96,12 @@ const STEPS = [
   {
     n: '02',
     t: 'Submit posts',
-    d: 'Paste the URL of a tweet you wrote about Kolo. Metrics are fetched automatically.',
+    d: 'Paste the URL of a tweet, Reddit post, or Telegram message you wrote about Kolo.',
   },
   {
     n: '03',
     t: 'Get scored',
-    d: 'Engagement and credibility produce an auto-score. Moderators can fine-tune outliers.',
+    d: 'X and Reddit are auto-scored from engagement × credibility. Telegram is moderator-reviewed.',
   },
   {
     n: '04',
@@ -144,8 +144,9 @@ export default async function LandingPage() {
           <div className="hero-row">
             <div>
               <p className="hero-sub">
-                An ongoing ambassador program. Paste a tweet you wrote about Kolo, get scored on
-                reach and credibility, and earn your share of the reward pool.
+                An ongoing ambassador program. Paste a tweet, Reddit post, or Telegram message you
+                wrote about Kolo, get scored on reach and credibility, and earn your share of the
+                reward pool.
               </p>
               <div className="hero-cta">
                 {signInCta}

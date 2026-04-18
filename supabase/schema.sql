@@ -18,6 +18,9 @@ create table if not exists users (
   tier_multiplier         decimal(3,2) default 1.0,
   wallet_address          text,
   telegram_handle         text,  -- lowercase, no leading @; unique when set (see index below)
+  reddit_username         text,  -- no leading u/; unique when set
+  reddit_karma            decimal(10,0) default 0,  -- total_karma from reddit.com/user/{name}/about.json
+  reddit_karma_updated_at timestamptz,
   role                    text check (role in ('ambassador', 'moderator', 'admin')) default 'ambassador',
   created_at              timestamptz default now(),
   updated_at              timestamptz default now()
@@ -38,7 +41,7 @@ create table if not exists campaigns (
 create table if not exists submissions (
   id                uuid primary key default gen_random_uuid(),
   user_id           uuid references users(id) on delete cascade,
-  platform          text not null default 'x',
+  platform          text not null default 'x' check (platform in ('x', 'reddit', 'telegram')),
   post_url          text not null,
   post_id           text,
 
@@ -69,6 +72,10 @@ create unique index if not exists idx_submissions_post
 create unique index if not exists users_telegram_handle_key
   on users (telegram_handle)
   where telegram_handle is not null;
+
+create unique index if not exists users_reddit_username_key
+  on users (reddit_username)
+  where reddit_username is not null;
 
 create table if not exists tier_config (
   tier            text primary key,

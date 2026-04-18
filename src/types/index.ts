@@ -4,7 +4,7 @@ export type Tier = 'bronze' | 'silver' | 'gold';
 export type Role = 'ambassador' | 'moderator' | 'admin';
 export type SubmissionStatus = 'pending' | 'approved' | 'rejected';
 export type CampaignStatus = 'draft' | 'active' | 'completed';
-export type Platform = 'x' | 'reddit' | 'youtube';
+export type Platform = 'x' | 'reddit' | 'telegram';
 
 export interface User {
   id: string;
@@ -19,6 +19,9 @@ export interface User {
   tier_multiplier: number;
   wallet_address: string | null;
   telegram_handle: string | null;
+  reddit_username: string | null;
+  reddit_karma: number;
+  reddit_karma_updated_at: string | null;
   role: Role;
   created_at: string;
   updated_at: string;
