@@ -1,10 +1,7 @@
 interface TickerProps {
   pool: number;
-  daysLeft: number;
   ambassadors: number;
   postsApproved: number;
-  sprintDay: number;
-  sprintLength: number;
   avgScore?: number;
   lastPayout?: { amount: number; handle: string } | null;
 }
@@ -12,20 +9,18 @@ interface TickerProps {
 /**
  * Full-bleed black ticker — CSS-animated (42s linear scroll via .ticker-track).
  * Items render 3× so the -50% translateX loop is seamless.
+ * Program is ongoing, so no sprint-day / days-left framing.
  */
 export function Ticker({
   pool,
-  daysLeft,
   ambassadors,
   postsApproved,
-  sprintDay,
-  sprintLength,
   avgScore,
   lastPayout,
 }: TickerProps) {
   const items: React.ReactNode[] = [
     <>
-      <b>Sprint</b> <span>day {sprintDay} / {sprintLength} ·</span>
+      <b>Program</b> <span>genesis · ongoing ·</span>
     </>,
     <>
       <b>Pool</b> <em>${pool.toLocaleString()}</em>
@@ -52,9 +47,6 @@ export function Ticker({
     );
   }
   items.push(
-    <>
-      <b>Days left</b> <em>{daysLeft}</em>
-    </>,
     <>
       <b>Tier caps</b> <span>bronze 1.0×</span> <span>silver 1.2×</span> <span>gold 1.5×</span>
     </>

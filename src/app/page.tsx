@@ -4,15 +4,12 @@ import { Ticker } from '@/components/layout/Ticker';
 import { auth } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase';
 
-export const revalidate = 60; // sprint stats don't need to be sub-minute fresh
+export const revalidate = 60; // program stats don't need to be sub-minute fresh
 
-interface SprintStatus {
+interface ProgramStatus {
   pool: number;
   ambassadors: number;
   postsApproved: number;
-  sprintDay: number;
-  sprintLength: number;
-  daysLeft: number;
   avgScore: number;
 }
 
@@ -22,13 +19,13 @@ interface RecentSubmission {
   minutesAgo: number;
 }
 
-async function loadSprintStatus(): Promise<SprintStatus> {
+async function loadProgramStatus(): Promise<ProgramStatus> {
   const sb = supabaseAdmin();
 
   const [campaignRes, ambassadorsRes, submissionsRes, scoresRes] = await Promise.all([
     sb
       .from('campaigns')
-      .select('pool_amount, start_date, end_date, status')
+      .select('pool_amount, status')
       .eq('status', 'active')
       .order('start_date', { ascending: false })
       .limit(1)
@@ -47,14 +44,6 @@ async function loadSprintStatus(): Promise<SprintStatus> {
       .eq('status', 'approved'),
   ]);
 
-  const now = Date.now();
-  const start = campaignRes.data?.start_date ? new Date(campaignRes.data.start_date).getTime() : now;
-  const end = campaignRes.data?.end_date ? new Date(campaignRes.data.end_date).getTime() : now;
-  const dayMs = 24 * 60 * 60 * 1000;
-  const sprintLength = Math.max(1, Math.ceil((end - start) / dayMs));
-  const sprintDay = Math.min(sprintLength, Math.max(1, Math.ceil((now - start) / dayMs)));
-  const daysLeft = Math.max(0, Math.ceil((end - now) / dayMs));
-
   const scores = (scoresRes.data ?? []) as { final_score: number | null }[];
   const avgScore =
     scores.length === 0
@@ -65,9 +54,6 @@ async function loadSprintStatus(): Promise<SprintStatus> {
     pool: campaignRes.data?.pool_amount ?? 5000,
     ambassadors: ambassadorsRes.count ?? 0,
     postsApproved: submissionsRes.count ?? 0,
-    sprintDay,
-    sprintLength,
-    daysLeft,
     avgScore,
   };
 }
@@ -128,7 +114,7 @@ export default async function LandingPage() {
   const session = await auth();
   const loggedIn = !!session?.user?.id;
 
-  const [status, recent] = await Promise.all([loadSprintStatus(), loadRecentSubmissions()]);
+  const [status, recent] = await Promise.all([loadProgramStatus(), loadRecentSubmissions()]);
 
   const signInCta = loggedIn ? (
     <Link href="/dashboard" className="btn btn-primary btn-lg">
@@ -146,7 +132,7 @@ export default async function LandingPage() {
           <div className="eyebrow">
             <span className="dot" aria-hidden />
             <span>
-              genesis sprint · day {status.sprintDay} of {status.sprintLength} · pool{' '}
+              genesis · ambassador program · pool{' '}
               <b style={{ color: 'var(--ink)' }}>${status.pool.toLocaleString()}</b>
             </span>
           </div>
@@ -184,12 +170,14 @@ export default async function LandingPage() {
                 <div className="stat-value mono">{status.ambassadors.toLocaleString()}</div>
               </div>
               <div className="stat">
-                <div className="stat-label">Days left</div>
-                <div className="stat-value mono">{status.daysLeft}</div>
-              </div>
-              <div className="stat">
                 <div className="stat-label">Posts approved</div>
                 <div className="stat-value mono">{status.postsApproved.toLocaleString()}</div>
+              </div>
+              <div className="stat">
+                <div className="stat-label">Avg score</div>
+                <div className="stat-value mono">
+                  {status.avgScore > 0 ? status.avgScore.toFixed(1) : '—'}
+                </div>
               </div>
             </div>
           </div>
@@ -199,11 +187,8 @@ export default async function LandingPage() {
       {/* ---------- Ticker ---------- */}
       <Ticker
         pool={status.pool}
-        daysLeft={status.daysLeft}
         ambassadors={status.ambassadors}
         postsApproved={status.postsApproved}
-        sprintDay={status.sprintDay}
-        sprintLength={status.sprintLength}
         avgScore={status.avgScore || undefined}
       />
 
