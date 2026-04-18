@@ -925,6 +925,8 @@
 
     .dash-hero,
     .dash-split { grid-template-columns: 1fr; }
+    .telegram-row { grid-template-columns: 1fr !important; text-align: left !important; }
+    .telegram-row > div:last-child { text-align: left !important; }
     .sub-row { grid-template-columns: 1fr 80px; gap: 8px; padding: 16px; }
     .sub-row .hide-m { display: none; }
     .dash-big { font-size: 64px; }

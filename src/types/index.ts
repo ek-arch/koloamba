@@ -18,6 +18,7 @@ export interface User {
   tier: Tier;
   tier_multiplier: number;
   wallet_address: string | null;
+  telegram_handle: string | null;
   role: Role;
   created_at: string;
   updated_at: string;

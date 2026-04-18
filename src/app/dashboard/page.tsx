@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getCurrentUser } from '@/lib/session';
 import { supabaseAdmin } from '@/lib/supabase';
 import { RewardCalculator } from '@/components/dashboard/RewardCalculator';
+import { TelegramCard } from '@/components/dashboard/TelegramCard';
 import type { Campaign, LeaderboardRow, Submission, Tier } from '@/types';
 
 export const revalidate = 0;
@@ -186,6 +187,17 @@ export default async function DashboardPage() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* ----- Telegram link + token balance ----- */}
+        <div style={{ marginTop: 24 }}>
+          <TelegramCard
+            initialHandle={user.telegram_handle}
+            // TODO: when the Kolo replica DB is wired, fetch balance by
+            // user.telegram_handle and pass here. Until then: null = not
+            // available / not yet synced.
+            balance={null}
+          />
         </div>
 
         {/* ----- Submissions + Calculator ----- */}

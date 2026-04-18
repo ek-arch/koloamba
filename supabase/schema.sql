@@ -17,6 +17,7 @@ create table if not exists users (
   tier                    text check (tier in ('bronze', 'silver', 'gold')) default 'bronze',
   tier_multiplier         decimal(3,2) default 1.0,
   wallet_address          text,
+  telegram_handle         text,  -- lowercase, no leading @; unique when set (see index below)
   role                    text check (role in ('ambassador', 'moderator', 'admin')) default 'ambassador',
   created_at              timestamptz default now(),
   updated_at              timestamptz default now()
@@ -63,6 +64,11 @@ create table if not exists submissions (
 
 create unique index if not exists idx_submissions_post
   on submissions(user_id, platform, post_id);
+
+-- telegram_handle is unique when present; allows multiple NULLs.
+create unique index if not exists users_telegram_handle_key
+  on users (telegram_handle)
+  where telegram_handle is not null;
 
 create table if not exists tier_config (
   tier            text primary key,
