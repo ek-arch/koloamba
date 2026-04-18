@@ -30,6 +30,10 @@ export async function POST(req: Request) {
   let username: string | null;
   let karma = 0;
 
+  // `notice` surfaces a non-fatal warning to the UI when Reddit is rate-
+  // limiting us — we still save the handle.
+  let notice: string | null = null;
+
   if (raw === null || raw === '' || raw === undefined) {
     username = null;
   } else if (typeof raw !== 'string') {
@@ -40,10 +44,14 @@ export async function POST(req: Request) {
       return err('Invalid Reddit username — use 3–20 chars (letters, digits, _ or -).', 400);
     }
     const stats = await fetchRedditUser(username);
-    if (!stats.exists) {
+    if (stats.reachable && !stats.exists) {
       return err(`Reddit user u/${username} was not found.`, 404);
     }
     karma = stats.totalKarma;
+    if (!stats.reachable) {
+      notice =
+        "Linked. Reddit rate-limited us from our server, so karma shows 0 for now — we'll retry shortly.";
+    }
   }
 
   const admin = supabaseAdmin();
@@ -70,6 +78,7 @@ export async function POST(req: Request) {
     data: {
       reddit_username: data.reddit_username,
       reddit_karma:    Number(data.reddit_karma ?? 0),
+      notice,
     },
     error: null,
   });

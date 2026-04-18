@@ -104,18 +104,18 @@ export async function fetchRedditPost(
 // ----- User karma -----
 
 export interface RedditUserStats {
+  /** The user is known to exist (200 response). */
   exists: boolean;
+  /**
+   * We were able to reach Reddit. False on 429 / 403 / network error —
+   * in that case the caller should still save the handle and backfill
+   * karma later, rather than rejecting as "not found".
+   */
+  reachable: boolean;
   totalKarma: number;
   commentKarma: number;
   linkKarma: number;
 }
-
-const EMPTY_USER: RedditUserStats = {
-  exists: false,
-  totalKarma: 0,
-  commentKarma: 0,
-  linkKarma: 0,
-};
 
 interface RedditAbout {
   data?: {
@@ -126,31 +126,56 @@ interface RedditAbout {
   error?: unknown;
 }
 
-/** Fetch total_karma for a Reddit username. Public endpoint, no auth. */
+/**
+ * Fetch total_karma for a Reddit username. Tries multiple hosts in order
+ * because Reddit aggressively rate-limits `www.reddit.com` from cloud IPs
+ * (Vercel, AWS, GCP) with 429 / 403, while `old.reddit.com` tends to work.
+ */
 export async function fetchRedditUser(username: string): Promise<RedditUserStats> {
   const clean = username.replace(/^u\//, '').replace(/^\//, '').toLowerCase();
-  if (!/^[a-z0-9_-]{3,20}$/i.test(clean)) return EMPTY_USER;
-
-  try {
-    const res = await fetch(`https://www.reddit.com/user/${clean}/about.json`, {
-      headers: { 'user-agent': USER_AGENT, accept: 'application/json' },
-      cache: 'no-store',
-    });
-    if (res.status === 404) return EMPTY_USER;
-    if (!res.ok) {
-      console.warn(`[reddit-fetcher] user ${clean}: HTTP ${res.status}`);
-      return EMPTY_USER;
-    }
-    const json = (await res.json()) as RedditAbout;
-    if (!json?.data || json.error) return EMPTY_USER;
-    return {
-      exists: true,
-      totalKarma: Number(json.data.total_karma ?? 0),
-      commentKarma: Number(json.data.comment_karma ?? 0),
-      linkKarma: Number(json.data.link_karma ?? 0),
-    };
-  } catch (e) {
-    console.warn(`[reddit-fetcher] user ${clean}: fetch failed`, e);
-    return EMPTY_USER;
+  if (!/^[a-z0-9_-]{3,20}$/i.test(clean)) {
+    return { exists: false, reachable: true, totalKarma: 0, commentKarma: 0, linkKarma: 0 };
   }
+
+  const hosts = ['https://old.reddit.com', 'https://www.reddit.com', 'https://api.reddit.com'];
+  let lastStatus: number | null = null;
+
+  for (const host of hosts) {
+    try {
+      const res = await fetch(`${host}/user/${clean}/about.json`, {
+        headers: { 'user-agent': USER_AGENT, accept: 'application/json' },
+        cache: 'no-store',
+        redirect: 'follow',
+      });
+      lastStatus = res.status;
+
+      // Definitive "doesn't exist" — stop trying other hosts.
+      if (res.status === 404) {
+        return { exists: false, reachable: true, totalKarma: 0, commentKarma: 0, linkKarma: 0 };
+      }
+      if (!res.ok) {
+        console.warn(`[reddit-fetcher] user ${clean}: ${host} → HTTP ${res.status}`);
+        continue; // try next host
+      }
+
+      const json = (await res.json()) as RedditAbout;
+      if (!json?.data || json.error) continue;
+
+      return {
+        exists: true,
+        reachable: true,
+        totalKarma: Number(json.data.total_karma ?? 0),
+        commentKarma: Number(json.data.comment_karma ?? 0),
+        linkKarma: Number(json.data.link_karma ?? 0),
+      };
+    } catch (e) {
+      console.warn(`[reddit-fetcher] user ${clean}: ${host} threw`, e);
+      // try next host
+    }
+  }
+
+  // All hosts failed with rate-limits / network errors. Caller treats this as
+  // "reachable: false, save anyway".
+  console.warn(`[reddit-fetcher] user ${clean}: all hosts exhausted, last status=${lastStatus}`);
+  return { exists: false, reachable: false, totalKarma: 0, commentKarma: 0, linkKarma: 0 };
 }

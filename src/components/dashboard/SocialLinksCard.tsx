@@ -126,12 +126,13 @@ function LinkRow({
         : json.data.reddit_username ?? null;
     setHandle(saved);
     setEditing(false);
+    // The Reddit route surfaces a non-fatal notice (e.g. rate-limited).
+    const serverNotice = typeof json.data?.notice === 'string' ? json.data.notice : null;
     setMessage(
       next === null
         ? 'Removed.'
-        : platform === 'reddit'
-        ? 'Linked — karma fetched.'
-        : 'Linked.',
+        : serverNotice ??
+            (platform === 'reddit' ? 'Linked — karma fetched.' : 'Linked.'),
     );
     startTransition(() => router.refresh());
   }
