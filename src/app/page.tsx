@@ -158,9 +158,8 @@ export default async function LandingPage() {
           <div className="hero-row">
             <div>
               <p className="hero-sub">
-                A {status.sprintLength}-day ambassador sprint. Paste a tweet you wrote about Kolo,
-                get scored on reach and credibility, and take your slice of the reward pool when the
-                sprint ends.
+                An ongoing ambassador program. Paste a tweet you wrote about Kolo, get scored on
+                reach and credibility, and earn your share of the reward pool.
               </p>
               <div className="hero-cta">
                 {signInCta}

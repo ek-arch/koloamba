@@ -26,40 +26,28 @@ export default async function LeaderboardPage() {
   const totalWeighted = rows.reduce((sum, r) => sum + Number(r.weighted_score), 0);
 
   return (
-    <main className="mx-auto max-w-6xl space-y-6 px-6 py-10">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold">Leaderboard</h1>
-        <p className="text-muted">
-          Ranked by weighted score (points × tier multiplier). Projected rewards update as
-          submissions are approved.
+    <main className="section-block" style={{ borderBottom: 'none' }}>
+      <div className="wrap">
+        <div className="section-head" style={{ marginBottom: 32 }}>
+          <div className="eyebrow">leaderboard · live</div>
+          <h2 className="section-title">
+            Who&apos;s <em>earning</em> right now.
+          </h2>
+        </div>
+        <p className="section-lede" style={{ marginTop: -16, marginBottom: 32 }}>
+          Updated continuously from X. Ranked by weighted score (points × tier multiplier).
+          {pool > 0 && <> Current reward pool: ${pool.toLocaleString('en-US')}.</>}
         </p>
+
+        <LeaderboardTable
+          rows={rows}
+          totalWeighted={totalWeighted}
+          pool={pool}
+          currentUserId={session?.user?.id}
+        />
+
+        <AutoRefresh />
       </div>
-
-      <div className="grid gap-4 sm:grid-cols-3">
-        <div className="card">
-          <div className="stat-label">Ambassadors</div>
-          <div className="stat-number mt-1">{rows.length}</div>
-        </div>
-        <div className="card">
-          <div className="stat-label">Total weighted score</div>
-          <div className="stat-number mt-1">{totalWeighted.toFixed(1)}</div>
-        </div>
-        <div className="card">
-          <div className="stat-label">Reward pool</div>
-          <div className="stat-number mt-1 text-accent">
-            {pool > 0 ? `$${pool.toLocaleString('en-US')}` : '—'}
-          </div>
-        </div>
-      </div>
-
-      <LeaderboardTable
-        rows={rows}
-        totalWeighted={totalWeighted}
-        pool={pool}
-        currentUserId={session?.user?.id}
-      />
-
-      <AutoRefresh />
     </main>
   );
 }
