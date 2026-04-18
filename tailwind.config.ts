@@ -19,6 +19,20 @@ const config: Config = {
           hover:  '#f2f2f2', // strong / hover
           invert: '#000000', // hero / inverse sections
         },
+        // Prototype aliases (surface.raised / strong, ink shades)
+        surface: {
+          raised:  '#f8f8f8',
+          strong:  '#f2f2f2',
+        },
+        ink: {
+          DEFAULT: '#000000',
+          soft:    '#1a1a1a',
+        },
+        line: {
+          DEFAULT: '#eaeaea', // border
+          strong:  '#dedede', // border-2
+          dark:    '#1f1f1f', // dark-line
+        },
         border: {
           DEFAULT: '#e5e5e5',
           strong:  '#d4d4d4',
@@ -34,15 +48,25 @@ const config: Config = {
           tertiary:  '#666666',
           invert:    '#ffffff',
         },
-        muted:     '#737373',
+        muted: {
+          DEFAULT: '#6b6b6b',
+          soft:    '#a3a3a3',
+        },
         tier: {
           bronze: '#cd7f32',
           silver: '#8a8a8a',
           gold:   '#c99a2e',
         },
+        status: {
+          approved: '#1db954',
+          pending:  '#e5b547',
+          rejected: '#d94a4a',
+        },
       },
       fontFamily: {
-        sans: ['Fixelvariable', 'var(--font-inter)', 'Arial', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sans:  ['Fixelvariable', 'var(--font-inter)', 'Arial', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        mono:  ['var(--font-jetbrains-mono)', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+        serif: ['var(--font-instrument-serif)', 'Georgia', 'serif'],
       },
       fontSize: {
         // Kolo display scale

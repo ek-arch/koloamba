@@ -26,7 +26,7 @@ export default async function LeaderboardPage() {
   const totalWeighted = rows.reduce((sum, r) => sum + Number(r.weighted_score), 0);
 
   return (
-    <div className="space-y-6">
+    <main className="mx-auto max-w-6xl space-y-6 px-6 py-10">
       <div className="space-y-2">
         <h1 className="text-3xl font-bold">Leaderboard</h1>
         <p className="text-muted">
@@ -60,6 +60,6 @@ export default async function LeaderboardPage() {
       />
 
       <AutoRefresh />
-    </div>
+    </main>
   );
 }

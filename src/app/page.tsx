@@ -1,117 +1,403 @@
+import Link from 'next/link';
 import { SignInButton } from '@/components/auth/SignInButton';
-import { TierBadge } from '@/components/dashboard/TierBadge';
+import { Ticker } from '@/components/layout/Ticker';
 import { auth } from '@/lib/auth';
+import { supabaseAdmin } from '@/lib/supabase';
+
+export const revalidate = 60; // sprint stats don't need to be sub-minute fresh
+
+interface SprintStatus {
+  pool: number;
+  ambassadors: number;
+  postsApproved: number;
+  sprintDay: number;
+  sprintLength: number;
+  daysLeft: number;
+  avgScore: number;
+}
+
+interface RecentSubmission {
+  handle: string;
+  score: number;
+  minutesAgo: number;
+}
+
+async function loadSprintStatus(): Promise<SprintStatus> {
+  const sb = supabaseAdmin();
+
+  const [campaignRes, ambassadorsRes, submissionsRes, scoresRes] = await Promise.all([
+    sb
+      .from('campaigns')
+      .select('pool_amount, start_date, end_date, status')
+      .eq('status', 'active')
+      .order('start_date', { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+    sb
+      .from('users')
+      .select('id', { count: 'exact', head: true })
+      .eq('role', 'ambassador'),
+    sb
+      .from('submissions')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'approved'),
+    sb
+      .from('submissions')
+      .select('final_score')
+      .eq('status', 'approved'),
+  ]);
+
+  const now = Date.now();
+  const start = campaignRes.data?.start_date ? new Date(campaignRes.data.start_date).getTime() : now;
+  const end = campaignRes.data?.end_date ? new Date(campaignRes.data.end_date).getTime() : now;
+  const dayMs = 24 * 60 * 60 * 1000;
+  const sprintLength = Math.max(1, Math.ceil((end - start) / dayMs));
+  const sprintDay = Math.min(sprintLength, Math.max(1, Math.ceil((now - start) / dayMs)));
+  const daysLeft = Math.max(0, Math.ceil((end - now) / dayMs));
+
+  const scores = (scoresRes.data ?? []) as { final_score: number | null }[];
+  const avgScore =
+    scores.length === 0
+      ? 0
+      : scores.reduce((a, s) => a + (s.final_score ?? 0), 0) / scores.length;
+
+  return {
+    pool: campaignRes.data?.pool_amount ?? 5000,
+    ambassadors: ambassadorsRes.count ?? 0,
+    postsApproved: submissionsRes.count ?? 0,
+    sprintDay,
+    sprintLength,
+    daysLeft,
+    avgScore,
+  };
+}
+
+async function loadRecentSubmissions(): Promise<RecentSubmission[]> {
+  const sb = supabaseAdmin();
+  const { data } = await sb
+    .from('submissions')
+    .select('final_score, created_at, users:user_id(twitter_handle)')
+    .eq('status', 'approved')
+    .order('created_at', { ascending: false })
+    .limit(4);
+
+  if (!data) return [];
+  const now = Date.now();
+  return data
+    .filter((r) => r.users)
+    .map((r) => {
+      const user = Array.isArray(r.users) ? r.users[0] : r.users;
+      return {
+        handle: '@' + (user?.twitter_handle ?? 'anon'),
+        score: r.final_score ?? 0,
+        minutesAgo: Math.max(1, Math.round((now - new Date(r.created_at).getTime()) / 60000)),
+      };
+    });
+}
+
+const TIERS = [
+  { key: 'bronze', name: 'Bronze', mult: '1.0×', range: '0–999 old points' },
+  { key: 'silver', name: 'Silver', mult: '1.2×', range: '1,000–4,999 old points' },
+  { key: 'gold',   name: 'Gold',   mult: '1.5×', range: '5,000+ old points' },
+] as const;
+
+const STEPS = [
+  {
+    n: '01',
+    t: 'Sign in with X',
+    d: 'Connect your X account so we can verify tweet ownership and pull your TwitterScore.',
+  },
+  {
+    n: '02',
+    t: 'Submit posts',
+    d: 'Paste the URL of a tweet you wrote about Kolo. Metrics are fetched automatically.',
+  },
+  {
+    n: '03',
+    t: 'Get scored',
+    d: 'Engagement and credibility produce an auto-score. Moderators can fine-tune outliers.',
+  },
+  {
+    n: '04',
+    t: 'Earn rewards',
+    d: 'Climb the board, claim your share of the pool when the sprint ends.',
+  },
+];
 
 export default async function LandingPage() {
   const session = await auth();
   const loggedIn = !!session?.user?.id;
 
+  const [status, recent] = await Promise.all([loadSprintStatus(), loadRecentSubmissions()]);
+
+  const signInCta = loggedIn ? (
+    <Link href="/dashboard" className="btn btn-primary btn-lg">
+      Go to dashboard →
+    </Link>
+  ) : (
+    <SignInButton className="btn btn-primary btn-lg">Sign in with X →</SignInButton>
+  );
+
   return (
-    <div className="space-y-24 pb-24">
-      {/* Hero — light, kolo.xyz style */}
-      <section className="pt-8 space-y-8">
-        <p className="eyebrow text-accent">
-          Genesis Sprint · 1-month campaign
-        </p>
-        <h1 className="text-5xl font-semibold leading-[1.02] tracking-tight text-text-primary sm:text-display-sm lg:text-display-md">
-          Earn rewards for content about <span className="text-accent">Kolo</span>.
-        </h1>
-        <p className="max-w-2xl text-lg text-text-tertiary">
-          Join the ambassador program. Submit your posts, get scored on reach and credibility,
-          and earn your share of the reward pool.
-        </p>
-        <div className="flex flex-wrap gap-3 pt-4">
-          {loggedIn ? (
-            <a href="/dashboard" className="btn-accent">Go to dashboard →</a>
-          ) : (
-            <SignInButton className="btn-accent">Join with X →</SignInButton>
-          )}
-          <a href="/leaderboard" className="btn-outline">View leaderboard</a>
-        </div>
-      </section>
+    <>
+      {/* ---------- Hero ---------- */}
+      <section className="hero">
+        <div className="wrap">
+          <div className="eyebrow">
+            <span className="dot" aria-hidden />
+            <span>
+              genesis sprint · day {status.sprintDay} of {status.sprintLength} · pool{' '}
+              <b style={{ color: 'var(--ink)' }}>${status.pool.toLocaleString()}</b>
+            </span>
+          </div>
 
-      {/* How it works — numbered cards, kolo.xyz style */}
-      <section className="section">
-        <div className="flex items-baseline justify-between">
-          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">How it works</h2>
-          <p className="hidden text-sm text-muted sm:block">Four steps to rewards</p>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            { step: '01', title: 'Sign in with X', body: 'Connect your X account so we can verify tweet ownership and credibility.' },
-            { step: '02', title: 'Submit posts', body: 'Paste the URL of a tweet you wrote about Kolo. Metrics are fetched automatically.' },
-            { step: '03', title: 'Get scored', body: 'Engagement + your TwitterScore produce an auto-score. Moderators can fine-tune.' },
-            { step: '04', title: 'Earn rewards', body: 'Climb the leaderboard and claim your share of the pool when the sprint ends.' },
-          ].map((s) => (
-            <div key={s.step} className="card group">
-              <div className="font-mono text-sm text-muted">{s.step}</div>
-              <h3 className="mt-6 text-lg font-semibold text-text-primary">{s.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-text-tertiary">{s.body}</p>
-              <div className="mt-6 text-accent opacity-0 transition group-hover:opacity-100">→</div>
+          <h1 className="headline">
+            Earn for what you <em>post</em> about <span className="accent-word">Kolo.</span>
+          </h1>
+
+          <div className="hero-row">
+            <div>
+              <p className="hero-sub">
+                A {status.sprintLength}-day ambassador sprint. Paste a tweet you wrote about Kolo,
+                get scored on reach and credibility, and take your slice of the reward pool when the
+                sprint ends.
+              </p>
+              <div className="hero-cta">
+                {signInCta}
+                <Link href="/leaderboard" className="btn btn-ghost btn-lg">
+                  View leaderboard
+                </Link>
+              </div>
             </div>
-          ))}
+
+            <div className="hero-stats">
+              <div className="stat">
+                <div className="stat-label">Pool</div>
+                <div className="stat-value">
+                  ${(status.pool / 1000).toFixed(0)}
+                  <span className="text-muted" style={{ fontSize: 20 }}>
+                    K
+                  </span>
+                </div>
+              </div>
+              <div className="stat">
+                <div className="stat-label">Ambassadors</div>
+                <div className="stat-value mono">{status.ambassadors.toLocaleString()}</div>
+              </div>
+              <div className="stat">
+                <div className="stat-label">Days left</div>
+                <div className="stat-value mono">{status.daysLeft}</div>
+              </div>
+              <div className="stat">
+                <div className="stat-label">Posts approved</div>
+                <div className="stat-value mono">{status.postsApproved.toLocaleString()}</div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Tiers */}
-      <section className="section">
-        <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Tiers & multipliers</h2>
-        <p className="max-w-2xl text-text-tertiary">
-          Your tier is set from your prior Kolo contribution (old points). It multiplies every
-          point you earn in the sprint.
-        </p>
-        <div className="grid gap-4 sm:grid-cols-3">
-          <div className="card">
-            <TierBadge tier="bronze" />
-            <div className="stat-number mt-6">1.0×</div>
-            <p className="mt-3 text-sm text-text-tertiary">0–999 old points</p>
+      {/* ---------- Ticker ---------- */}
+      <Ticker
+        pool={status.pool}
+        daysLeft={status.daysLeft}
+        ambassadors={status.ambassadors}
+        postsApproved={status.postsApproved}
+        sprintDay={status.sprintDay}
+        sprintLength={status.sprintLength}
+        avgScore={status.avgScore || undefined}
+      />
+
+      {/* ---------- 01 · How it works ---------- */}
+      <section id="how-it-works" className="section-block">
+        <div className="wrap">
+          <div className="section-head">
+            <div className="eyebrow">01 — how it works</div>
+            <h2 className="section-title">
+              Four steps between a tweet and a <em>payout.</em>
+            </h2>
           </div>
-          <div className="card">
-            <TierBadge tier="silver" />
-            <div className="stat-number mt-6">1.2×</div>
-            <p className="mt-3 text-sm text-text-tertiary">1,000–4,999 old points</p>
-          </div>
-          <div className="card">
-            <TierBadge tier="gold" />
-            <div className="stat-number mt-6 text-tier-gold">1.5×</div>
-            <p className="mt-3 text-sm text-text-tertiary">5,000+ old points</p>
+          <div className="steps">
+            {STEPS.map((s) => (
+              <div key={s.n} className="step">
+                <div className="step-num">{s.n}</div>
+                <div className="step-title">{s.t}</div>
+                <div className="step-desc">{s.d}</div>
+                <div className="step-arrow">→</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Reward formula */}
-      <section className="section">
-        <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Reward formula</h2>
-        <div className="card space-y-4">
-          <p className="text-text-tertiary">
-            Your share of the pool is proportional to your weighted score vs everyone else&apos;s.
+      {/* ---------- 02 · Tiers & multipliers (dark) ---------- */}
+      <section id="tiers" className="section-block dark">
+        <div className="wrap">
+          <div className="section-head">
+            <div className="eyebrow">02 — tiers &amp; multipliers</div>
+            <h2 className="section-title">
+              Your prior contribution <em>travels with you.</em>
+            </h2>
+          </div>
+          <p
+            className="section-lede"
+            style={{ marginTop: -32, marginBottom: 40 }}
+          >
+            Tier is set from your old points at sprint start. It multiplies every point you earn —
+            so loyal contributors compound.
           </p>
-          <pre className="overflow-x-auto rounded-xs bg-bg-card border border-border px-4 py-3 text-sm text-text-primary">
-{`Reward = (S × M) / Σ(S × M) × Pool
-
-S = your total points (capped at 100)
-M = your tier multiplier (1.0 / 1.2 / 1.5)
-Σ(S × M) = sum of all ambassadors' weighted scores
-Pool = total reward pool for the sprint`}
-          </pre>
-          <p className="text-sm text-text-tertiary">
-            The calculator on your dashboard updates in real time as submissions are approved.
-          </p>
+          <div className="tiers">
+            {TIERS.map((t) => (
+              <div key={t.key} className={`tier tier-${t.key}`}>
+                <div className="tier-badge" aria-hidden />
+                <div className="tier-name">{t.name}</div>
+                <div className="tier-mult">{t.mult}</div>
+                <div className="tier-range">{t.range}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="card text-center">
-        <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Ready to join?</h2>
-        <p className="mt-3 text-text-tertiary">Sign in with X and start submitting.</p>
-        <div className="mt-6 flex justify-center">
-          {loggedIn ? (
-            <a href="/dashboard" className="btn-accent">Go to dashboard →</a>
-          ) : (
-            <SignInButton className="btn-accent">Join with X →</SignInButton>
-          )}
+      {/* ---------- 03 · Reward formula ---------- */}
+      <section id="formula" className="section-block">
+        <div className="wrap">
+          <div className="section-head">
+            <div className="eyebrow">03 — reward formula</div>
+            <h2 className="section-title">
+              Math, in <em>plain sight.</em>
+            </h2>
+          </div>
+          <div className="formula-card">
+            <div>
+              <p className="section-lede" style={{ marginTop: 0, marginBottom: 20 }}>
+                Your share of the pool is proportional to your weighted score vs. everyone
+                else&apos;s. The calculator on your dashboard updates in real time as submissions are
+                approved.
+              </p>
+              <dl className="formula-legend">
+                <div>
+                  <dt>S</dt>
+                  <dd>your total points (capped at 100 per sprint)</dd>
+                </div>
+                <div>
+                  <dt>M</dt>
+                  <dd>tier multiplier — 1.0 / 1.2 / 1.5</dd>
+                </div>
+                <div>
+                  <dt>Σ(S × M)</dt>
+                  <dd>sum of all ambassadors&apos; weighted scores</dd>
+                </div>
+                <div>
+                  <dt>Pool</dt>
+                  <dd>total reward pool for the sprint</dd>
+                </div>
+              </dl>
+            </div>
+            <div className="formula-expr">
+              <div>
+                <span className="c-k">Reward</span> <span className="c-m">=</span> (S × M)
+              </div>
+              <div style={{ borderTop: '1px solid var(--line-2)', margin: '6px 0' }} />
+              <div>
+                Σ(S × M) × <span className="c-k">Pool</span>
+              </div>
+              <div style={{ marginTop: 20, color: 'var(--muted)' }}>
+                <span className="c-m">{'// worked example'}</span>
+              </div>
+              <div>
+                <span className="c-m">S =</span> 34, <span className="c-m">M =</span> 1.2× (silver)
+              </div>
+              <div>
+                <span className="c-m">Σ =</span> 9,420,{' '}
+                <span className="c-m">Pool =</span> ${status.pool.toLocaleString()}
+              </div>
+              <div style={{ marginTop: 6 }}>
+                <span className="c-k">Reward ≈</span> $
+                {(((34 * 1.2) / (9420 + 34 * 1.2)) * status.pool).toFixed(2)}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
-    </div>
+
+      {/* ---------- 04 · Ready? ---------- */}
+      <section className="section-block" style={{ borderBottom: 'none' }}>
+        <div className="wrap">
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: 48,
+              alignItems: 'center',
+            }}
+            className="landing-cta"
+          >
+            <div>
+              <div className="eyebrow">04 — ready?</div>
+              <h2 className="section-title" style={{ marginTop: 14 }}>
+                Sign in. <em>Start submitting.</em>
+              </h2>
+              <p className="section-lede" style={{ marginTop: 20 }}>
+                No forms. No approvals queue. We pull your handle and TwitterScore on first submit
+                and you&apos;re in.
+              </p>
+              <div className="hero-cta" style={{ marginTop: 28 }}>
+                {signInCta}
+                <Link href="/leaderboard" className="btn btn-ghost btn-lg">
+                  See who&apos;s winning
+                </Link>
+              </div>
+            </div>
+
+            <div style={{ borderLeft: '1px solid var(--line)', paddingLeft: 48 }}>
+              <div className="mono-sm" style={{ marginBottom: 20 }}>
+                LIVE — recent submissions
+              </div>
+              {recent.length === 0 ? (
+                <p className="text-sm text-muted">
+                  Be the first to submit — this list populates as posts get approved.
+                </p>
+              ) : (
+                recent.map((a, i) => (
+                  <div
+                    key={`${a.handle}-${i}`}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 12,
+                      padding: '12px 0',
+                      borderBottom:
+                        i < recent.length - 1 ? '1px solid var(--line)' : 'none',
+                    }}
+                  >
+                    <div className="lb-avatar" style={{ width: 28, height: 28, fontSize: 11 }}>
+                      {a.handle[1]?.toUpperCase() ?? '?'}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 14, fontWeight: 500 }}>
+                        {a.handle}{' '}
+                        <span style={{ color: 'var(--muted)', fontWeight: 400, fontSize: 13 }}>
+                          posted
+                        </span>
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 12,
+                          color: 'var(--muted)',
+                          fontFamily: 'var(--font-jetbrains-mono), ui-monospace, monospace',
+                        }}
+                      >
+                        +{a.score.toFixed(1)} pts · {a.minutesAgo}m ago
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

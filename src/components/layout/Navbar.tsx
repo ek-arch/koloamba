@@ -2,44 +2,69 @@ import Link from 'next/link';
 import { auth } from '@/lib/auth';
 import { SignInButton, SignOutButton } from '@/components/auth/SignInButton';
 
+/**
+ * Sticky 64px navbar matching the Kolo Ambassadors prototype (`.nav-shell`).
+ * Brand mark is the kolo concentric-circle glyph drawn in CSS (.brand-mark).
+ */
 export async function Navbar() {
   const session = await auth();
   const loggedIn = !!session?.user?.id;
   const isStaff = loggedIn && (session!.user.role === 'moderator' || session!.user.role === 'admin');
 
   return (
-    <header className="border-b border-border bg-white/80 backdrop-blur sticky top-0 z-40">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="flex items-center gap-2 text-base font-semibold text-text-primary">
-          <span className="inline-block h-2 w-2 rounded-full bg-accent" />
-          <span>Kolo Ambassadors</span>
+    <header className="nav-shell">
+      <div className="wrap nav-inner">
+        <Link
+          href="/"
+          className="flex items-center gap-3 font-semibold tracking-tight text-text-primary"
+        >
+          <span className="brand-mark" aria-hidden />
+          <span>Kolo</span>
+          <span className="ml-1 text-[11px] font-medium uppercase tracking-[0.08em] text-muted">
+            Ambassadors
+          </span>
         </Link>
-        <div className="flex items-center gap-5 text-sm">
-          <Link href="/leaderboard" className="text-text-secondary hover:text-text-primary transition">
+
+        <nav className="flex items-center gap-7 text-sm">
+          <Link
+            href="/"
+            className="text-muted transition-colors duration-instant hover:text-text-primary"
+          >
+            Home
+          </Link>
+          <Link
+            href="/leaderboard"
+            className="text-muted transition-colors duration-instant hover:text-text-primary"
+          >
             Leaderboard
           </Link>
-          {loggedIn ? (
-            <>
-              <Link href="/dashboard" className="text-text-secondary hover:text-text-primary transition">
-                Dashboard
-              </Link>
-              {isStaff && (
-                <Link href="/admin/review" className="text-text-primary hover:text-accent transition">
-                  Admin
-                </Link>
-              )}
-              <span className="hidden text-muted sm:inline">
-                @{session!.user.handle}
-              </span>
-              <SignOutButton className="btn-outline px-3 py-1.5 text-sm" />
-            </>
-          ) : (
-            <SignInButton className="btn-primary px-3 py-1.5 text-sm">
-              Sign in with X
-            </SignInButton>
+          {loggedIn && (
+            <Link
+              href="/dashboard"
+              className="text-muted transition-colors duration-instant hover:text-text-primary"
+            >
+              Dashboard
+            </Link>
           )}
-        </div>
-      </nav>
+          {isStaff && (
+            <Link
+              href="/admin/review"
+              className="text-text-primary transition-colors duration-instant hover:text-accent"
+            >
+              Admin
+            </Link>
+          )}
+
+          {loggedIn ? (
+            <div className="flex items-center gap-3">
+              <span className="hidden text-muted sm:inline">@{session!.user.handle}</span>
+              <SignOutButton className="btn-outline px-3 py-1.5 text-sm" />
+            </div>
+          ) : (
+            <SignInButton className="btn-primary px-4 py-2 text-sm">Sign in with X →</SignInButton>
+          )}
+        </nav>
+      </div>
     </header>
   );
 }

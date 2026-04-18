@@ -11,22 +11,24 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   await requireStaffPage();
 
   return (
-    <div className="grid gap-8 md:grid-cols-[220px_1fr]">
-      <aside className="space-y-1">
-        <div className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-muted">
-          Admin
-        </div>
-        {navItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className="block rounded-xs border border-transparent px-3 py-2 text-sm text-text-tertiary transition hover:border-border hover:bg-bg-card hover:text-text-primary"
-          >
-            {item.label}
-          </Link>
-        ))}
-      </aside>
-      <div>{children}</div>
-    </div>
+    <main className="mx-auto max-w-6xl px-6 py-10">
+      <div className="grid gap-8 md:grid-cols-[220px_1fr]">
+        <aside className="space-y-1">
+          <div className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-muted">
+            Admin
+          </div>
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="block rounded-xs border border-transparent px-3 py-2 text-sm text-text-tertiary transition hover:border-border hover:bg-bg-card hover:text-text-primary"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </aside>
+        <div>{children}</div>
+      </div>
+    </main>
   );
 }
