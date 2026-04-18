@@ -1,13 +1,11 @@
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
 
-const navItems = [
-  { href: '/dashboard',             label: 'Overview' },
-  { href: '/dashboard/submit',      label: 'Submit post' },
-  { href: '/dashboard/submissions', label: 'My submissions' },
-];
-
+/**
+ * Dashboard shell — auth guard only. The prototype has no sidebar; the main
+ * /dashboard page handles its own section-head + CTA, and the submit /
+ * submissions sub-routes each handle their own wrappers.
+ */
 export default async function DashboardLayout({
   children,
 }: {
@@ -16,22 +14,5 @@ export default async function DashboardLayout({
   const session = await auth();
   if (!session?.user?.id) redirect('/');
 
-  return (
-    <main className="mx-auto max-w-6xl px-6 py-10">
-      <div className="grid gap-8 md:grid-cols-[220px_1fr]">
-        <aside className="space-y-1">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="block rounded-xs border border-transparent px-3 py-2 text-sm text-text-tertiary transition hover:border-border hover:bg-bg-card hover:text-text-primary"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </aside>
-        <div>{children}</div>
-      </div>
-    </main>
-  );
+  return <>{children}</>;
 }

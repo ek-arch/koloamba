@@ -2,7 +2,7 @@ import { SubmitForm } from '@/components/submissions/SubmitForm';
 
 export default function SubmitPage() {
   return (
-    <div className="space-y-6">
+    <main className="mx-auto max-w-3xl space-y-6 px-6 py-10">
       <div>
         <h1 className="text-3xl font-bold">Submit a post</h1>
         <p className="mt-1 text-muted">
@@ -23,9 +23,9 @@ export default function SubmitPage() {
           <li>The tweet must be from your own X account.</li>
           <li>Each post can only be submitted once.</li>
           <li>A moderator will approve, reject, or adjust the score.</li>
-          <li>Points are capped at 100 per ambassador for the sprint.</li>
+          <li>Points are capped at 100 per ambassador.</li>
         </ul>
       </div>
-    </div>
+    </main>
   );
 }
