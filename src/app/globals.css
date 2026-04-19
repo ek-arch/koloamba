@@ -108,15 +108,15 @@
   .btn-lg { height: 56px; padding: 0 28px; font-size: 16px; border-radius: var(--radius-md); }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-xs bg-bg-invert px-5 py-2.5
+    @apply inline-flex items-center justify-center whitespace-nowrap rounded-xs bg-bg-invert px-5 py-2.5
            font-medium text-text-invert transition duration-instant hover:bg-accent hover:text-black;
   }
   .btn-accent {
-    @apply inline-flex items-center justify-center rounded-xs bg-accent px-5 py-2.5
+    @apply inline-flex items-center justify-center whitespace-nowrap rounded-xs bg-accent px-5 py-2.5
            font-semibold text-bg-invert transition duration-instant hover:bg-accent-dim;
   }
   .btn-outline {
-    @apply inline-flex items-center justify-center rounded-xs border border-border-strong
+    @apply inline-flex items-center justify-center whitespace-nowrap rounded-xs border border-border-strong
            px-5 py-2.5 font-medium text-text-primary transition duration-instant
            hover:border-bg-invert hover:bg-bg-card;
   }
@@ -200,8 +200,8 @@
     border-bottom: 1px solid var(--line);
   }
   .headline {
-    font-size: clamp(58.72px, 9vw, 161.48px);
-    line-height: 0.92;
+    font-size: clamp(40px, 9vw, 161.48px);
+    line-height: 0.95;
     letter-spacing: -0.045em;
     font-weight: 500;
     margin: 28px 0 0;

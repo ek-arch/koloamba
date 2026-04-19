@@ -20,7 +20,7 @@ export async function Navbar() {
         >
           <span className="brand-mark" aria-hidden />
           <span>Kolo</span>
-          <span className="ml-1 text-[11px] font-medium uppercase tracking-[0.08em] text-muted">
+          <span className="ml-1 hidden text-[11px] font-medium uppercase tracking-[0.08em] text-muted sm:inline">
             Ambassadors
           </span>
         </Link>
@@ -61,7 +61,7 @@ export async function Navbar() {
               <SignOutButton className="btn-outline px-3 py-1.5 text-sm" />
             </div>
           ) : (
-            <SignInButton className="btn-primary px-3 py-2 text-sm sm:px-4">
+            <SignInButton className="btn-primary whitespace-nowrap px-3 py-2 text-sm sm:px-4">
               <span className="hidden sm:inline">Sign in with X →</span>
               <span className="sm:hidden">Sign in →</span>
             </SignInButton>
