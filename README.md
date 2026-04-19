@@ -1,8 +1,8 @@
 # Kolo Ambassador Platform
 
-Web app for the Kolo Ambassador Program (Genesis Sprint) — crypto creators submit posts about Kolo, get scored on engagement + credibility, earn rewards from a shared pool.
+Web app for the ongoing Kolo Ambassador Program — crypto creators submit posts about Kolo across X, Reddit, and Telegram; posts are scored on engagement + credibility; rewards are distributed from per-campaign pools. Genesis Sprint is the first campaign; more follow.
 
-See [`docs/kolo-ambassador-spec.md`](docs/kolo-ambassador-spec.md) for the full spec.
+See [`docs/kolo-ambassador-spec.md`](docs/kolo-ambassador-spec.md) for the full spec and [`docs/auth-multi-identity.md`](docs/auth-multi-identity.md) for the planned X + Telegram dual-identity auth.
 
 ## Stack
 

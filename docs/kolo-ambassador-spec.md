@@ -1,18 +1,20 @@
-# Kolo Ambassador Program: Genesis Sprint — Technical Spec & Architecture
+# Kolo Ambassador Program — Technical Spec & Architecture
 
 ## 1. Project Overview
 
-**Product:** A web platform for the Kolo Ambassador Program (Genesis Sprint) — a 1-month campaign where crypto content creators (ambassadors) submit tweets about Kolo, get scored based on engagement + credibility, and earn rewards from a shared pool proportional to their weighted score.
+**Product:** A web platform for the ongoing Kolo Ambassador Program. Crypto content creators (ambassadors) submit posts about Kolo across X, Reddit, and Telegram; the system scores posts on engagement + credibility; moderators review; rewards are distributed from per-campaign pools proportional to weighted scores.
+
+The Genesis Sprint is the first (1-month) campaign, but the platform is designed to run successive campaigns indefinitely — new pools, new date ranges, same ambassadors, accumulating tier standing over time.
 
 **Core flow:**
-1. Ambassador logs in via X (Twitter) OAuth
-2. Submits tweet links about Kolo
-3. System auto-fetches engagement metrics (likes, retweets, views) + TwitterScore from twitterscore.io API
-4. Moderator reviews submissions, can adjust scores
+1. Ambassador signs in via X OAuth **or** Telegram Login Widget (either identity; both can be linked to one account)
+2. Submits post links (X, Reddit, or Telegram)
+3. System auto-fetches engagement metrics per platform + TwitterScore for X posts
+4. Moderator reviews submissions, can override scores (Telegram uses a 0.5/1/2/3 quick-pick)
 5. Leaderboard updates with ranked ambassadors
 6. Rewards calculated using weighted formula: `Reward = (S × M) / Σ(S × M) × Pool`
 
-**Scale:** Hundreds of ambassadors. Single campaign (Genesis Sprint). 1-month duration.
+**Scale:** Hundreds of ambassadors per campaign; ongoing operation with successive campaigns. Currently running Genesis Sprint (1 month).
 
 **Design:** Dark theme, cyan/teal accents, card-based layout (reference: Kreators platform aesthetic). Clean and simple.
 
@@ -37,19 +39,36 @@
 ```sql
 CREATE TABLE users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  twitter_id TEXT UNIQUE NOT NULL,
-  twitter_handle TEXT NOT NULL,
+
+  -- Twitter/X identity (nullable: user may have signed up with Telegram instead)
+  twitter_id TEXT UNIQUE,
+  twitter_handle TEXT,
   twitter_name TEXT,
   twitter_avatar_url TEXT,
   twitter_score DECIMAL(6,2) DEFAULT 0,        -- from twitterscore.io
   twitter_score_updated_at TIMESTAMPTZ,
+
+  -- Telegram identity (nullable: user may have signed up with X instead)
+  telegram_id BIGINT UNIQUE,                   -- stable numeric id from Telegram
+  telegram_handle TEXT,                        -- @username; changeable on TG's side
+  telegram_name TEXT,
+  telegram_avatar_url TEXT,
+
+  -- Reddit is link-only, never an auth identity
+  reddit_username TEXT UNIQUE,
+
   old_points DECIMAL(10,2) DEFAULT 0,           -- genesis points (imported)
   tier TEXT CHECK (tier IN ('bronze', 'silver', 'gold')) DEFAULT 'bronze',
   tier_multiplier DECIMAL(3,2) DEFAULT 1.0,     -- 1.0 / 1.2 / 1.5
-  wallet_address TEXT,                           -- optional, collected monthly
+  wallet_address TEXT,
   role TEXT CHECK (role IN ('ambassador', 'moderator', 'admin')) DEFAULT 'ambassador',
   created_at TIMESTAMPTZ DEFAULT now(),
-  updated_at TIMESTAMPTZ DEFAULT now()
+  updated_at TIMESTAMPTZ DEFAULT now(),
+
+  -- At least one auth identity must be present
+  CONSTRAINT users_has_auth_identity CHECK (
+    twitter_id IS NOT NULL OR telegram_id IS NOT NULL
+  )
 );
 ```
 
@@ -173,11 +192,26 @@ INSERT INTO tier_config VALUES
 
 ## 5. Key Features & Components
 
-### 5.1 Authentication (X OAuth)
-- Login with X via NextAuth.js
-- On first login: create user record, pull Twitter handle + avatar
-- Auto-fetch TwitterScore from twitterscore.io API
-- Store Twitter ID for tweet ownership verification
+### 5.1 Authentication (X OAuth + Telegram Login Widget)
+
+Two first-class sign-in paths. One user row can hold both identities:
+
+- **X OAuth** via NextAuth.js — pulls twitter_id, handle, avatar; auto-fetches TwitterScore.
+- **Telegram Login Widget** via a custom NextAuth `CredentialsProvider` — verifies the HMAC-SHA256 payload server-side with the bot token, stores telegram_id + telegram_handle + photo.
+
+**Linking rules:**
+- `twitter_id` and `telegram_id` are both nullable but at least one must be set (DB CHECK constraint).
+- Linking a second identity happens **only from an authenticated session** (no auto-merge at sign-in). From a signed-in user's dashboard, they can attach the other identity through the same widget/OAuth flow.
+- **Collision policy:** if a user tries to sign in with an identity that's already attached to a *different* account, we refuse with a clear error directing them to unlink it on that other account first. Manual merge via admin if genuinely needed.
+
+**Submission rules cross-reference linked identities:**
+- X posts require `twitter_id` (ownership verified against tweet author)
+- Reddit posts require `reddit_username` (linked on dashboard, matched to post author)
+- Telegram posts require `telegram_id` (user must be signed-in-or-linked via the widget so ownership is verified)
+
+A Telegram-only user (no linked X) **cannot submit X posts** — they'll be prompted to link X first.
+
+**When to reconsider managed auth (Privy / Dynamic):** if we add a third sign-in path (email, wallet, additional social), the DIY plumbing stops being cheaper than a hosted service. Current two-identity setup is the right break-even point.
 
 ### 5.2 Tweet Submission Flow
 ```
@@ -452,6 +486,17 @@ Build in this exact order — each step depends on the previous:
 18. **Real-time updates** — Supabase subscriptions for leaderboard
 19. **Responsive design** — Mobile-friendly
 20. **Edge cases** — Duplicate detection, rate limiting, error states
+
+### Phase 6: Multi-platform scoring
+21. **Reddit + Telegram submissions** — URL parsers, ownership checks, per-platform fetchers
+22. **Per-platform scoring** — X (engagement × credibility, cap 30), Reddit (pure engagement, cap 10), Telegram (moderator-graded 0.5/1/2/3)
+23. **Moderator scoring guide** — in-queue info button + full modal rubric
+
+### Phase 7: Dual-identity auth
+24. **Schema migration** — nullable twitter_id, add telegram_id + telegram_name + telegram_avatar_url, CHECK constraint
+25. **Telegram CredentialsProvider** — HMAC verification of Login Widget payload
+26. **Landing page** — second "Sign in with Telegram" button; dashboard link-identity flow for adding the other identity post sign-in
+27. **Account-collision handling** — refuse sign-in with a second-account Telegram and surface a clear "unlink elsewhere first" message
 
 ---
 
