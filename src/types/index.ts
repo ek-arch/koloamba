@@ -20,8 +20,6 @@ export interface User {
   wallet_address: string | null;
   telegram_handle: string | null;
   reddit_username: string | null;
-  reddit_karma: number;
-  reddit_karma_updated_at: string | null;
   role: Role;
   created_at: string;
   updated_at: string;

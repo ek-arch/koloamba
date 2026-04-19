@@ -11,7 +11,6 @@ type ReviewSubmission = Submission & {
     tier: Tier;
     twitter_score: number;
     reddit_username: string | null;
-    reddit_karma: number | null;
     telegram_handle: string | null;
   } | null;
 };
@@ -33,7 +32,7 @@ export default async function ReviewPage({
   const { data } = await admin
     .from('submissions')
     .select(
-      '*, users:user_id(twitter_handle, twitter_name, twitter_avatar_url, tier, twitter_score, reddit_username, reddit_karma, telegram_handle)',
+      '*, users:user_id(twitter_handle, twitter_name, twitter_avatar_url, tier, twitter_score, reddit_username, telegram_handle)',
     )
     .eq('status', status)
     .order('created_at', { ascending: false });

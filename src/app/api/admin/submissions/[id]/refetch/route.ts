@@ -31,7 +31,7 @@ export async function POST(
 
   const { data: user } = await admin
     .from('users')
-    .select('twitter_score, reddit_karma')
+    .select('twitter_score')
     .eq('id', sub.user_id)
     .maybeSingle();
 
@@ -47,7 +47,6 @@ export async function POST(
   const engagement = await fetchPostMetrics(parsed);
   const score = computeAutoScore(engagement, {
     twitterScore: Number(user?.twitter_score ?? 0),
-    redditKarma:  Number(user?.reddit_karma  ?? 0),
   });
 
   const { data, error: dbErr } = await admin

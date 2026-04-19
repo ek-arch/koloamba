@@ -1,9 +1,8 @@
 // POST /api/me/reddit  { username: string | null }
 //
-// Saves (or clears) the current ambassador's Reddit username. On save we also
-// fetch the user's total_karma from reddit.com/user/{name}/about.json so the
-// scoring formula can use it immediately. If Reddit is unreachable the row
-// still saves and karma is left at 0 (moderator can set it later).
+// Saves (or clears) the current ambassador's Reddit username. Used as an
+// ownership check — Reddit submissions must match this handle. No karma
+// fetch: Reddit rate-limits cloud IPs hard, and karma doesn't feed scoring.
 //
 // Validation: Reddit usernames are 3–20 chars, [a-zA-Z0-9_-]. Leading u/ or /
 // is stripped. Stored lowercased.
@@ -11,7 +10,6 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase';
-import { fetchRedditUser } from '@/lib/reddit-fetcher';
 
 const USERNAME_RE = /^[a-z0-9_-]{3,20}$/;
 
@@ -28,11 +26,6 @@ export async function POST(req: Request) {
 
   const raw = body.username;
   let username: string | null;
-  let karma = 0;
-
-  // `notice` surfaces a non-fatal warning to the UI when Reddit is rate-
-  // limiting us — we still save the handle.
-  let notice: string | null = null;
 
   if (raw === null || raw === '' || raw === undefined) {
     username = null;
@@ -43,28 +36,17 @@ export async function POST(req: Request) {
     if (!USERNAME_RE.test(username)) {
       return err('Invalid Reddit username — use 3–20 chars (letters, digits, _ or -).', 400);
     }
-    const stats = await fetchRedditUser(username);
-    if (stats.reachable && !stats.exists) {
-      return err(`Reddit user u/${username} was not found.`, 404);
-    }
-    karma = stats.totalKarma;
-    if (!stats.reachable) {
-      notice =
-        "Linked. Reddit rate-limited us from our server, so karma shows 0 for now — we'll retry shortly.";
-    }
   }
 
   const admin = supabaseAdmin();
   const { data, error: dbErr } = await admin
     .from('users')
     .update({
-      reddit_username:         username,
-      reddit_karma:            username === null ? 0 : karma,
-      reddit_karma_updated_at: username === null ? null : new Date().toISOString(),
-      updated_at:              new Date().toISOString(),
+      reddit_username: username,
+      updated_at:      new Date().toISOString(),
     })
     .eq('id', session.user.id)
-    .select('reddit_username, reddit_karma')
+    .select('reddit_username')
     .single();
 
   if (dbErr) {
@@ -75,11 +57,7 @@ export async function POST(req: Request) {
   }
 
   return NextResponse.json({
-    data: {
-      reddit_username: data.reddit_username,
-      reddit_karma:    Number(data.reddit_karma ?? 0),
-      notice,
-    },
+    data: { reddit_username: data.reddit_username },
     error: null,
   });
 }

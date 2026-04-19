@@ -10,11 +10,14 @@
 //   X         engagement = (likes + rt×2 + replies×1.5 + views×0.01) / 100, cap 10
 //             credibility = clamp(twitter_score / 100, 0, 1)
 //   Reddit    engagement = (ups + comments×1.5) / 50, cap 10
-//             credibility = 0 (Reddit karma API gates auth behind a captcha /
-//               builder-policy wall that blocks many of our users from
-//               registering; we display karma as context when we can fetch
-//               it, but scoring does not depend on it).
-//   Telegram  flat 1.0 per post. No external signal; moderator can bump.
+//             credibility = 0. Reddit's karma API is rate-limited from cloud
+//             IPs and doesn't tell us much about Kolo-topical credibility, so
+//             score is pure engagement. Ownership is verified via the linked
+//             u/ handle on the dashboard.
+//   Telegram  flat 1.0 per post (baseline). No external signal; moderator
+//             assigns a quality-graded override in {0.5, 1, 2, 3} in the
+//             review queue — cap ~3 keeps Telegram comment-farming from
+//             dominating vs. higher-reach X/Reddit posts.
 
 import type { Platform } from '@/types';
 import type { PostEngagement } from './post-metrics';
@@ -30,12 +33,6 @@ export interface ScoreBreakdown {
 export interface CredibilityInputs {
   /** X TwitterScore (0..100). Unused for Reddit/Telegram. */
   twitterScore?: number;
-  /**
-   * Reddit total_karma (integer, 0..∞). Currently unused in scoring; kept in
-   * the interface so the call site stays stable if we later re-enable
-   * karma-weighted credibility. See module docstring.
-   */
-  redditKarma?: number;
 }
 
 const ROUND2 = (n: number) => Number(n.toFixed(2));

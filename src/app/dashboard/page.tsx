@@ -199,7 +199,7 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* ----- Social links (Telegram token balance + Reddit karma) ----- */}
+        {/* ----- Social links (Telegram token balance + Reddit handle) ----- */}
         <div style={{ marginTop: 24 }}>
           <SocialLinksCard
             telegramHandle={user.telegram_handle}
@@ -208,7 +208,6 @@ export default async function DashboardPage() {
             // available / not yet synced.
             tokenBalance={null}
             redditUsername={user.reddit_username}
-            redditKarma={Number(user.reddit_karma ?? 0)}
           />
         </div>
 

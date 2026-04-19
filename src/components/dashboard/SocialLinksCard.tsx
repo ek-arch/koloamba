@@ -10,32 +10,28 @@ interface Props {
   /** Current token balance from the Kolo replica (null = not wired yet). */
   tokenBalance: number | null;
   redditUsername: string | null;
-  redditKarma: number;
 }
 
 interface RowProps {
   platform: Platform;
   label: string;
   prefix: string;
-  valueLabel: string;
-  valueDisplay: React.ReactNode;
+  valueLabel?: string;
+  valueDisplay?: React.ReactNode;
   initialHandle: string | null;
   placeholder: string;
   hint: string;
-  /** When true, show a "Refresh" action next to the handle (Reddit only). */
-  showRefresh?: boolean;
 }
 
 /**
  * Dashboard card that holds the two platform links we cross-reference off-site:
  *   - Telegram → token balance via the Kolo replica DB (balance slot)
- *   - Reddit   → total_karma, fed into the per-platform credibility weight
+ *   - Reddit   → ownership verification for Reddit submissions
  */
 export function SocialLinksCard({
   telegramHandle,
   tokenBalance,
   redditUsername,
-  redditKarma,
 }: Props) {
   return (
     <div className="dash-card" style={{ padding: 24, gap: 20 }}>
@@ -79,14 +75,7 @@ export function SocialLinksCard({
         prefix="u/"
         placeholder="your_reddit_username"
         initialHandle={redditUsername}
-        valueLabel="Total karma"
-        valueDisplay={
-          <span style={{ color: redditKarma > 0 ? 'var(--ink)' : 'var(--muted)' }}>
-            {redditKarma > 0 ? redditKarma.toLocaleString() : '—'}
-          </span>
-        }
         hint="Links ownership — Reddit submissions must match this handle."
-        showRefresh
       />
     </div>
   );
@@ -101,8 +90,8 @@ function LinkRow({
   initialHandle,
   placeholder,
   hint,
-  showRefresh,
 }: RowProps) {
+  const hasValueColumn = valueLabel !== undefined;
   const router = useRouter();
   const [handle, setHandle] = useState(initialHandle);
   const [editing, setEditing] = useState(initialHandle === null);
@@ -130,14 +119,7 @@ function LinkRow({
         : json.data.reddit_username ?? null;
     setHandle(saved);
     setEditing(false);
-    // The Reddit route surfaces a non-fatal notice (e.g. rate-limited).
-    const serverNotice = typeof json.data?.notice === 'string' ? json.data.notice : null;
-    setMessage(
-      next === null
-        ? 'Removed.'
-        : serverNotice ??
-            (platform === 'reddit' ? 'Linked — karma fetched.' : 'Linked.'),
-    );
+    setMessage(next === null ? 'Removed.' : 'Linked.');
     startTransition(() => router.refresh());
   }
 
@@ -157,7 +139,7 @@ function LinkRow({
     <div
       style={{
         display: 'grid',
-        gridTemplateColumns: '1.4fr 1fr',
+        gridTemplateColumns: hasValueColumn ? '1.4fr 1fr' : '1fr',
         gap: 24,
         alignItems: 'center',
       }}
@@ -258,23 +240,6 @@ function LinkRow({
             >
               Unlink
             </button>
-            {showRefresh && handle && (
-              <button
-                type="button"
-                onClick={() => save(handle)}
-                className="mono-sm"
-                disabled={pending}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: 'var(--muted)',
-                  cursor: pending ? 'wait' : 'pointer',
-                  textDecoration: 'underline',
-                }}
-              >
-                {pending ? 'Refreshing…' : 'Refresh'}
-              </button>
-            )}
           </div>
         )}
 
@@ -283,20 +248,22 @@ function LinkRow({
         </div>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 4, textAlign: 'right' }}>
-        <div className="dash-label">{valueLabel}</div>
-        <div
-          style={{
-            fontFamily: 'var(--font-jetbrains-mono), ui-monospace, monospace',
-            fontSize: 32,
-            fontWeight: 500,
-            letterSpacing: '-0.035em',
-            fontVariantNumeric: 'tabular-nums',
-          }}
-        >
-          {valueDisplay}
+      {hasValueColumn && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, textAlign: 'right' }}>
+          <div className="dash-label">{valueLabel}</div>
+          <div
+            style={{
+              fontFamily: 'var(--font-jetbrains-mono), ui-monospace, monospace',
+              fontSize: 32,
+              fontWeight: 500,
+              letterSpacing: '-0.035em',
+              fontVariantNumeric: 'tabular-nums',
+            }}
+          >
+            {valueDisplay}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

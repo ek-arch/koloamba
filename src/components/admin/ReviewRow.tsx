@@ -15,7 +15,6 @@ type ReviewSubmission = Submission & {
     tier: Tier;
     twitter_score: number;
     reddit_username: string | null;
-    reddit_karma: number | null;
     telegram_handle: string | null;
   } | null;
 };
@@ -25,6 +24,15 @@ const PLATFORM_LABEL: Record<Platform, string> = {
   reddit:   'Reddit',
   telegram: 'Telegram',
 };
+
+// Telegram is moderator-graded since we can't fetch engagement.
+// Range caps at 3 so Telegram can't outscale X/Reddit.
+const TELEGRAM_PRESETS = [
+  { value: 0.5, label: 'Low effort / thin comment' },
+  { value: 1,   label: 'Baseline (auto-score)' },
+  { value: 2,   label: 'Solid contribution' },
+  { value: 3,   label: 'Exceptional — max' },
+];
 
 export function ReviewRow({ submission }: { submission: ReviewSubmission }) {
   const router = useRouter();
@@ -191,6 +199,31 @@ export function ReviewRow({ submission }: { submission: ReviewSubmission }) {
             placeholder="Leave blank to use auto-score"
             className="mt-1 w-full rounded-xs border border-border bg-white px-3 py-2 font-mono text-text-primary outline-none focus:border-bg-invert"
           />
+          {submission.platform === 'telegram' && (
+            <div className="mt-2 flex flex-wrap items-center gap-1.5">
+              {TELEGRAM_PRESETS.map((preset) => {
+                const active = score === String(preset.value);
+                return (
+                  <button
+                    type="button"
+                    key={preset.value}
+                    onClick={() => setScore(String(preset.value))}
+                    title={preset.label}
+                    className={`rounded-xs border px-2 py-1 text-xs font-mono transition ${
+                      active
+                        ? 'border-bg-invert bg-bg-invert text-white'
+                        : 'border-border bg-white text-text-primary hover:border-bg-invert'
+                    }`}
+                  >
+                    {preset.value.toFixed(1)}
+                  </button>
+                );
+              })}
+              <span className="ml-1 text-[11px] text-muted">
+                0.5 low · 1 baseline · 2 solid · 3 exceptional
+              </span>
+            </div>
+          )}
         </label>
         <div className="flex flex-wrap items-end gap-2">
           {submission.platform !== 'telegram' && (
