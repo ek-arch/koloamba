@@ -6,8 +6,8 @@ export default function SubmitPage() {
       <div>
         <h1 className="text-3xl font-bold">Submit a post</h1>
         <p className="mt-1 text-muted">
-          Share a tweet you wrote about Kolo. Engagement metrics and your TwitterScore are
-          fetched automatically.
+          Share a tweet, Reddit post, or Telegram message you wrote about Kolo. Pick the platform,
+          paste your URL, and we handle the rest.
         </p>
       </div>
 
@@ -20,9 +20,14 @@ export default function SubmitPage() {
           Before you submit
         </h3>
         <ul className="list-disc space-y-1 pl-5 text-sm text-muted">
-          <li>The tweet must be from your own X account.</li>
-          <li>Each post can only be submitted once.</li>
-          <li>A moderator will approve, reject, or adjust the score.</li>
+          <li>The post must be from your own account — X, Reddit, or Telegram.</li>
+          <li>Link your Reddit username and Telegram handle on the dashboard first.</li>
+          <li>Each URL can only be submitted once.</li>
+          <li>
+            X and Reddit are auto-scored from engagement. Telegram is scored manually by a
+            moderator.
+          </li>
+          <li>A moderator can approve, reject, or override the score on any submission.</li>
           <li>Points are capped at 100 per ambassador.</li>
         </ul>
       </div>
