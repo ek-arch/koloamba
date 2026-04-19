@@ -5,6 +5,7 @@ import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { StatusBadge } from '@/components/ui/Badge';
 import { TierBadge } from '@/components/dashboard/TierBadge';
+import { ScoringGuideModal } from '@/components/admin/ScoringGuideModal';
 import type { Platform, Submission, Tier } from '@/types';
 
 type ReviewSubmission = Submission & {
@@ -42,6 +43,7 @@ export function ReviewRow({ submission }: { submission: ReviewSubmission }) {
   );
   const [notes, setNotes] = useState<string>(submission.moderator_notes ?? '');
   const [err, setErr] = useState<string | null>(null);
+  const [guideOpen, setGuideOpen] = useState(false);
 
   async function patch(body: Record<string, unknown>) {
     setErr(null);
@@ -189,7 +191,21 @@ export function ReviewRow({ submission }: { submission: ReviewSubmission }) {
           </div>
         </label>
         <label className="text-sm">
-          <span className="stat-label">Override score (optional)</span>
+          <span className="stat-label inline-flex items-center gap-1.5">
+            Override score (optional)
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                setGuideOpen(true);
+              }}
+              title="Open scoring guide"
+              aria-label="Open scoring guide"
+              className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-border text-[10px] font-semibold text-muted transition hover:border-bg-invert hover:text-text-primary"
+            >
+              i
+            </button>
+          </span>
           <input
             type="number"
             step="0.1"
@@ -268,6 +284,12 @@ export function ReviewRow({ submission }: { submission: ReviewSubmission }) {
       </label>
 
       {err && <p className="text-xs text-red-400">{err}</p>}
+
+      <ScoringGuideModal
+        open={guideOpen}
+        onClose={() => setGuideOpen(false)}
+        platform={submission.platform}
+      />
     </div>
   );
 }
