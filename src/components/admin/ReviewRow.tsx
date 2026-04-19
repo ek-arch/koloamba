@@ -5,7 +5,7 @@ import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { StatusBadge } from '@/components/ui/Badge';
 import { TierBadge } from '@/components/dashboard/TierBadge';
-import type { Submission, Tier } from '@/types';
+import type { Platform, Submission, Tier } from '@/types';
 
 type ReviewSubmission = Submission & {
   users: {
@@ -14,7 +14,16 @@ type ReviewSubmission = Submission & {
     twitter_avatar_url: string | null;
     tier: Tier;
     twitter_score: number;
+    reddit_username: string | null;
+    reddit_karma: number | null;
+    telegram_handle: string | null;
   } | null;
+};
+
+const PLATFORM_LABEL: Record<Platform, string> = {
+  x:        'X',
+  reddit:   'Reddit',
+  telegram: 'Telegram',
 };
 
 export function ReviewRow({ submission }: { submission: ReviewSubmission }) {
@@ -110,6 +119,9 @@ export function ReviewRow({ submission }: { submission: ReviewSubmission }) {
           {u && <TierBadge tier={u.tier} showMultiplier={false} />}
         </div>
         <div className="flex items-center gap-2">
+          <span className="rounded-xs border border-border px-2 py-0.5 text-[11px] font-medium uppercase tracking-[0.08em] text-text-primary">
+            {PLATFORM_LABEL[submission.platform]}
+          </span>
           <StatusBadge status={submission.status} />
           <span className="text-xs text-muted">
             {new Date(submission.created_at).toLocaleDateString()}
@@ -126,16 +138,40 @@ export function ReviewRow({ submission }: { submission: ReviewSubmission }) {
         {submission.post_url}
       </a>
 
-      <div className="grid grid-cols-2 gap-3 rounded-xs bg-bg-card px-3 py-2 text-xs sm:grid-cols-5">
-        <Metric label="Likes" value={submission.likes} />
-        <Metric label="Retweets" value={submission.retweets} />
-        <Metric label="Replies" value={submission.replies} />
-        <Metric label="Views" value={submission.views} />
-        <Metric
-          label="TwitterScore"
-          value={u ? Number(u.twitter_score).toFixed(1) : '—'}
-        />
-      </div>
+      {submission.platform === 'x' && (
+        <div className="grid grid-cols-2 gap-3 rounded-xs bg-bg-card px-3 py-2 text-xs sm:grid-cols-5">
+          <Metric label="Likes"    value={submission.likes} />
+          <Metric label="Retweets" value={submission.retweets} />
+          <Metric label="Replies"  value={submission.replies} />
+          <Metric label="Views"    value={submission.views} />
+          <Metric
+            label="TwitterScore"
+            value={u ? Number(u.twitter_score).toFixed(1) : '—'}
+          />
+        </div>
+      )}
+      {submission.platform === 'reddit' && (
+        <div className="grid grid-cols-2 gap-3 rounded-xs bg-bg-card px-3 py-2 text-xs sm:grid-cols-3">
+          <Metric label="Ups"      value={submission.likes} />
+          <Metric label="Comments" value={submission.replies} />
+          <Metric
+            label="Reddit handle"
+            value={u?.reddit_username ? `u/${u.reddit_username}` : '—'}
+          />
+        </div>
+      )}
+      {submission.platform === 'telegram' && (
+        <div className="grid grid-cols-2 gap-3 rounded-xs bg-bg-card px-3 py-2 text-xs sm:grid-cols-2">
+          <Metric
+            label="Telegram handle"
+            value={u?.telegram_handle ? `@${u.telegram_handle}` : '—'}
+          />
+          <Metric
+            label="Signal"
+            value="no external metrics — open link to review"
+          />
+        </div>
+      )}
 
       <div className="grid gap-3 sm:grid-cols-[1fr_2fr_auto]">
         <label className="text-sm">
@@ -157,15 +193,17 @@ export function ReviewRow({ submission }: { submission: ReviewSubmission }) {
           />
         </label>
         <div className="flex flex-wrap items-end gap-2">
-          <button
-            type="button"
-            onClick={onRefetch}
-            disabled={pending}
-            className="btn-outline px-3 py-2 text-sm disabled:opacity-50"
-            title="Re-pull engagement metrics and recompute auto-score"
-          >
-            Refetch
-          </button>
+          {submission.platform !== 'telegram' && (
+            <button
+              type="button"
+              onClick={onRefetch}
+              disabled={pending}
+              className="btn-outline px-3 py-2 text-sm disabled:opacity-50"
+              title="Re-pull engagement metrics and recompute auto-score"
+            >
+              Refetch
+            </button>
+          )}
           <button
             type="button"
             onClick={onApprove}

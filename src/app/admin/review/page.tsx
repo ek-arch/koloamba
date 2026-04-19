@@ -10,6 +10,9 @@ type ReviewSubmission = Submission & {
     twitter_avatar_url: string | null;
     tier: Tier;
     twitter_score: number;
+    reddit_username: string | null;
+    reddit_karma: number | null;
+    telegram_handle: string | null;
   } | null;
 };
 
@@ -29,7 +32,9 @@ export default async function ReviewPage({
   const admin = supabaseAdmin();
   const { data } = await admin
     .from('submissions')
-    .select('*, users:user_id(twitter_handle, twitter_name, twitter_avatar_url, tier, twitter_score)')
+    .select(
+      '*, users:user_id(twitter_handle, twitter_name, twitter_avatar_url, tier, twitter_score, reddit_username, reddit_karma, telegram_handle)',
+    )
     .eq('status', status)
     .order('created_at', { ascending: false });
 
