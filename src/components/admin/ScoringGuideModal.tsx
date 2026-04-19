@@ -51,7 +51,7 @@ export function ScoringGuideModal({ open, onClose, platform }: Props) {
 
         <div className="space-y-6 px-6 py-5 text-sm leading-relaxed">
           <section>
-            <h3 className="text-base font-semibold">Default rule — don't override</h3>
+            <h3 className="text-base font-semibold">Default rule — don&apos;t override</h3>
             <p className="mt-1 text-muted">
               On X and Reddit the auto-score already reflects measurable engagement.
               Leave it alone ~80% of the time. Override only when the formula misses
