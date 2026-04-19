@@ -930,5 +930,14 @@
     .sub-row { grid-template-columns: 1fr 80px; gap: 8px; padding: 16px; }
     .sub-row .hide-m { display: none; }
     .dash-big { font-size: 64px; }
+
+    /* Landing §04 "Ready?" CTA — stack + drop the vertical divider */
+    .landing-cta { grid-template-columns: 1fr !important; gap: 32px !important; }
+    .landing-cta > div:last-child {
+      border-left: none !important;
+      padding-left: 0 !important;
+      border-top: 1px solid var(--line);
+      padding-top: 32px;
+    }
   }
 }

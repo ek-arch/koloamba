@@ -25,10 +25,10 @@ export async function Navbar() {
           </span>
         </Link>
 
-        <nav className="flex items-center gap-7 text-sm">
+        <nav className="flex items-center gap-4 text-sm sm:gap-7">
           <Link
             href="/"
-            className="text-muted transition-colors duration-instant hover:text-text-primary"
+            className="hidden text-muted transition-colors duration-instant hover:text-text-primary sm:inline"
           >
             Home
           </Link>
@@ -61,7 +61,10 @@ export async function Navbar() {
               <SignOutButton className="btn-outline px-3 py-1.5 text-sm" />
             </div>
           ) : (
-            <SignInButton className="btn-primary px-4 py-2 text-sm">Sign in with X →</SignInButton>
+            <SignInButton className="btn-primary px-3 py-2 text-sm sm:px-4">
+              <span className="hidden sm:inline">Sign in with X →</span>
+              <span className="sm:hidden">Sign in →</span>
+            </SignInButton>
           )}
         </nav>
       </div>

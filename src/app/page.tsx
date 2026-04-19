@@ -101,12 +101,12 @@ const STEPS = [
   {
     n: '03',
     t: 'Get scored',
-    d: 'X is auto-scored on engagement × TwitterScore. Reddit on engagement. Telegram is moderator-reviewed.',
+    d: 'X is scored on engagement × credibility (up to 3× boost from TwitterScore). Reddit on engagement. Telegram is moderator-graded.',
   },
   {
     n: '04',
     t: 'Earn rewards',
-    d: 'Climb the board, claim your share of the pool when the sprint ends.',
+    d: 'Climb the board, claim your share of the pool when the campaign ends.',
   },
 ];
 
@@ -228,8 +228,8 @@ export default async function LandingPage() {
             className="section-lede"
             style={{ marginTop: -32, marginBottom: 40 }}
           >
-            Tier is set from your old points at sprint start. It multiplies every point you earn —
-            so loyal contributors compound.
+            Tier is set from your old points at campaign start. It multiplies every point you earn —
+            so loyal contributors compound across campaigns.
           </p>
           <div className="tiers">
             {TIERS.map((t) => (
@@ -263,7 +263,7 @@ export default async function LandingPage() {
               <dl className="formula-legend">
                 <div>
                   <dt>S</dt>
-                  <dd>your total points (capped at 100 per sprint)</dd>
+                  <dd>your total points (capped at 100 per campaign)</dd>
                 </div>
                 <div>
                   <dt>M</dt>
@@ -275,7 +275,7 @@ export default async function LandingPage() {
                 </div>
                 <div>
                   <dt>Pool</dt>
-                  <dd>total reward pool for the sprint</dd>
+                  <dd>total reward pool for the campaign</dd>
                 </div>
               </dl>
             </div>
