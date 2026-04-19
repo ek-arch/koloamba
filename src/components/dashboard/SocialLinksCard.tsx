@@ -22,6 +22,8 @@ interface RowProps {
   initialHandle: string | null;
   placeholder: string;
   hint: string;
+  /** When true, show a "Refresh" action next to the handle (Reddit only). */
+  showRefresh?: boolean;
 }
 
 /**
@@ -83,7 +85,8 @@ export function SocialLinksCard({
             {redditKarma > 0 ? redditKarma.toLocaleString() : '—'}
           </span>
         }
-        hint="Karma weights the auto-score on Reddit submissions (≥10k = full weight)."
+        hint="Links ownership — Reddit submissions must match this handle."
+        showRefresh
       />
     </div>
   );
@@ -98,6 +101,7 @@ function LinkRow({
   initialHandle,
   placeholder,
   hint,
+  showRefresh,
 }: RowProps) {
   const router = useRouter();
   const [handle, setHandle] = useState(initialHandle);
@@ -254,6 +258,23 @@ function LinkRow({
             >
               Unlink
             </button>
+            {showRefresh && handle && (
+              <button
+                type="button"
+                onClick={() => save(handle)}
+                className="mono-sm"
+                disabled={pending}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--muted)',
+                  cursor: pending ? 'wait' : 'pointer',
+                  textDecoration: 'underline',
+                }}
+              >
+                {pending ? 'Refreshing…' : 'Refresh'}
+              </button>
+            )}
           </div>
         )}
 

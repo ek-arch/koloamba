@@ -10,7 +10,10 @@
 //   X         engagement = (likes + rt×2 + replies×1.5 + views×0.01) / 100, cap 10
 //             credibility = clamp(twitter_score / 100, 0, 1)
 //   Reddit    engagement = (ups + comments×1.5) / 50, cap 10
-//             credibility = clamp(total_karma / 10_000, 0, 1)
+//             credibility = 0 (Reddit karma API gates auth behind a captcha /
+//               builder-policy wall that blocks many of our users from
+//               registering; we display karma as context when we can fetch
+//               it, but scoring does not depend on it).
 //   Telegram  flat 1.0 per post. No external signal; moderator can bump.
 
 import type { Platform } from '@/types';
@@ -27,7 +30,11 @@ export interface ScoreBreakdown {
 export interface CredibilityInputs {
   /** X TwitterScore (0..100). Unused for Reddit/Telegram. */
   twitterScore?: number;
-  /** Reddit total_karma (integer, 0..∞). Unused for X/Telegram. */
+  /**
+   * Reddit total_karma (integer, 0..∞). Currently unused in scoring; kept in
+   * the interface so the call site stays stable if we later re-enable
+   * karma-weighted credibility. See module docstring.
+   */
   redditKarma?: number;
 }
 
@@ -40,7 +47,7 @@ export function computeAutoScore(
 ): ScoreBreakdown {
   switch (engagement.platform) {
     case 'x':        return scoreX(engagement, credibility.twitterScore ?? 0);
-    case 'reddit':   return scoreReddit(engagement, credibility.redditKarma ?? 0);
+    case 'reddit':   return scoreReddit(engagement);
     case 'telegram': return scoreTelegram();
   }
 }
@@ -60,20 +67,19 @@ function scoreX(e: PostEngagement, twitterScore: number): ScoreBreakdown {
   };
 }
 
-function scoreReddit(e: PostEngagement, karma: number): ScoreBreakdown {
+function scoreReddit(e: PostEngagement): ScoreBreakdown {
   // Reddit absolute numbers run lower than X; the /50 divisor puts ~50 ups or
-  // ~35 ups + 10 comments at the 1.0 engagement mark.
+  // ~35 ups + 10 comments at the 1.0 engagement mark. No credibility multiplier
+  // (see module docstring); auto_score tops out at 10 for very-viral posts
+  // where X can reach 20. Moderators can bump via moderator_score when needed.
   const raw = e.likes + e.replies * 1.5;
   const engagementScore = Math.min(raw / 50, 10);
-  // Full credibility at 10k total_karma — active long-term users.
-  const weight = Math.min(Math.max(karma, 0) / 10_000, 1);
-  const autoScore = engagementScore * (1 + weight);
-  // No views → no rate; surface engagement per comment if replies exist.
+  const autoScore = engagementScore;
   const engagementRate = e.replies > 0 ? e.likes / Math.max(1, e.replies) : 0;
   return {
     rawEngagement:     raw,
     engagementScore,
-    credibilityWeight: weight,
+    credibilityWeight: 0,
     autoScore:         ROUND2(autoScore),
     engagementRate:    ROUND4(engagementRate),
   };
@@ -96,7 +102,7 @@ function scoreTelegram(): ScoreBreakdown {
 export function credibilityLabel(platform: Platform): string {
   switch (platform) {
     case 'x':        return 'TwitterScore';
-    case 'reddit':   return 'Reddit karma';
+    case 'reddit':   return '—'; // karma no longer weights the score
     case 'telegram': return '—';
   }
 }

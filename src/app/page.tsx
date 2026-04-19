@@ -101,7 +101,7 @@ const STEPS = [
   {
     n: '03',
     t: 'Get scored',
-    d: 'X and Reddit are auto-scored from engagement × credibility. Telegram is moderator-reviewed.',
+    d: 'X is auto-scored on engagement × TwitterScore. Reddit on engagement. Telegram is moderator-reviewed.',
   },
   {
     n: '04',

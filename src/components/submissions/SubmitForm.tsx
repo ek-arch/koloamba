@@ -16,7 +16,7 @@ const PLATFORMS: { k: Platform; label: string; placeholder: string; hint: string
     k: 'reddit',
     label: 'Reddit',
     placeholder: 'https://www.reddit.com/r/subname/comments/abc123/title/',
-    hint: 'Auto-scored from ups + comments × your Reddit karma. Link u/ on the dashboard first.',
+    hint: 'Auto-scored from ups + comments. Link u/ on the dashboard first to verify ownership.',
   },
   {
     k: 'telegram',
