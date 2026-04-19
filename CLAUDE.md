@@ -46,16 +46,17 @@ Full spec: [docs/kolo-ambassador-spec.md](docs/kolo-ambassador-spec.md)
 - Leaderboard `weighted_score = LEAST(total_points, 100) × tier_multiplier`
 
 ## Implementation Order (spec §10)
-1. **Phase 1 — Foundation** ← current
-   Project setup, DB schema, auth wiring, root layout
-2. **Phase 2 — Ambassador Core**
-   Landing, dashboard, submit page, my submissions
-3. **Phase 3 — Scoring & Leaderboard**
-   Tweet fetcher, TwitterScore, auto-scoring, leaderboard page
-4. **Phase 4 — Admin & Moderation**
-   Admin layout, review queue, user management, campaign settings
-5. **Phase 5 — Polish**
-   Reward calculator, real-time updates, responsive, edge cases
+1. ✅ **Phase 1 — Foundation** — Project setup, DB schema, auth wiring, root layout
+2. ✅ **Phase 2 — Ambassador Core** — Landing, dashboard, submit, my submissions
+3. ✅ **Phase 3 — Scoring & Leaderboard** — Tweet fetcher, TwitterScore, auto-scoring, leaderboard
+4. ✅ **Phase 4 — Admin & Moderation** — Admin layout, review queue, user management, campaign settings
+5. ✅ **Phase 5 — Polish** — Reward calculator, auto-refresh leaderboard, responsive, edge cases
+6. ✅ **Phase 6 — Multi-platform scoring** — Reddit + Telegram submissions, per-platform scoring (X cap 30 w/ TS-50 saturation, Reddit cap 10, Telegram 0.5/1/2/3), moderator scoring guide modal
+7. 🟡 **Phase 7 — Dual-identity auth (X + Telegram)** — designed, deferred. See [docs/auth-multi-identity.md](docs/auth-multi-identity.md). **Blocked on:** Kolo Telegram bot creation + env vars.
+8. ⏸ **Phase 8 — Kolo replica integration** — wire token balance into dashboard. **Blocked on:** DB replica access.
+9. ⏸ **Phase 9 — Bulk CSV old_points import** — admin upload flow for onboarding Genesis-era users in bulk.
+
+Lower-priority follow-ups (no phase, pick up anytime): rate-limiting on `POST /api/submissions`, Supabase realtime subscriptions to replace 20s leaderboard polling.
 
 ## Getting Started
 ```bash

@@ -492,11 +492,21 @@ Build in this exact order — each step depends on the previous:
 22. **Per-platform scoring** — X (engagement × credibility, cap 30), Reddit (pure engagement, cap 10), Telegram (moderator-graded 0.5/1/2/3)
 23. **Moderator scoring guide** — in-queue info button + full modal rubric
 
-### Phase 7: Dual-identity auth
+### Phase 7: Dual-identity auth *(designed, deferred — blocked on Kolo Telegram bot)*
 24. **Schema migration** — nullable twitter_id, add telegram_id + telegram_name + telegram_avatar_url, CHECK constraint
 25. **Telegram CredentialsProvider** — HMAC verification of Login Widget payload
 26. **Landing page** — second "Sign in with Telegram" button; dashboard link-identity flow for adding the other identity post sign-in
 27. **Account-collision handling** — refuse sign-in with a second-account Telegram and surface a clear "unlink elsewhere first" message
+
+Full design in [`auth-multi-identity.md`](./auth-multi-identity.md). Resume once `TELEGRAM_BOT_TOKEN` / `TELEGRAM_BOT_USERNAME` are in Vercel env.
+
+### Phase 8: Kolo replica integration *(blocked on DB replica access)*
+28. **Replica client** — read-only Postgres connection, cached 60s per identifier
+29. **Token balance wiring** — replace the `—` in SocialLinksCard with live balance keyed on telegram_id or twitter_handle
+30. **Tier recomputation** — if replica balance supersedes `old_points`, recompute tier on read
+
+### Phase 9: Bulk onboarding
+31. **CSV import** — admin uploads `handle,old_points`; staging table for not-yet-signed-in handles, apply on first login
 
 ---
 
