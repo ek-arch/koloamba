@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { supabaseAdmin } from '@/lib/supabase';
 import { ReviewRow } from '@/components/admin/ReviewRow';
+import { ScoringGuideButton } from '@/components/admin/ScoringGuideButton';
 import type { Submission, SubmissionStatus, Tier } from '@/types';
 
 type ReviewSubmission = Submission & {
@@ -41,11 +42,14 @@ export default async function ReviewPage({
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Review queue</h1>
-        <p className="mt-1 text-muted">
-          Approve, reject, or override the auto-score on ambassador submissions.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-3xl font-bold">Review queue</h1>
+          <p className="mt-1 text-muted">
+            Approve, reject, or override the auto-score on ambassador submissions.
+          </p>
+        </div>
+        <ScoringGuideButton />
       </div>
 
       <div className="flex gap-2 border-b border-border">
