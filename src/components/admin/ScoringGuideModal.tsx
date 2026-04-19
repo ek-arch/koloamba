@@ -65,13 +65,13 @@ export function ScoringGuideModal({ open, onClose, platform }: Props) {
             id="scoring-section-x"
             active={platform === 'x'}
             title="X (Twitter)"
-            formula="engagement × (1 + TwitterScore / 100), cap 20"
+            formula="engagement × (1 + min(TwitterScore/50, 1) × 2), cap 30"
             rows={[
-              ['Dead tweet (≤20 likes, low views)', '0.2 – 0.8'],
-              ['Modest (~100 likes, few RTs)',      '1.5 – 3'],
-              ['Solid (300+ likes, 50+ RTs)',       '5 – 8'],
-              ['Viral (1000+ likes, 200+ RTs)',     '10 – 16'],
-              ['Home run (max engagement)',         '18 – 20'],
+              ['Dead tweet (≤20 likes, low views)', '0.3 – 1.5'],
+              ['Modest (~100 likes, few RTs)',      '2 – 6'],
+              ['Solid (300+ likes, 50+ RTs)',       '8 – 18'],
+              ['Viral (1000+ likes, 200+ RTs)',     '18 – 28'],
+              ['Home run (TS ≥ 50, max engagement)', '30'],
             ]}
             downReasons={[
               'Bot or farmed engagement (generic mass replies, weird like ratio)',
@@ -82,7 +82,7 @@ export function ScoringGuideModal({ open, onClose, platform }: Props) {
               'Low engagement but high-quality educational thread',
               'Verifiable off-platform impact (rare — usually not warranted)',
             ]}
-            heuristic="If you're tempted to override X, it's almost always down, not up."
+            heuristic="TwitterScore curve: TS 0 → 1× · TS 25 → 2× · TS 50+ → 3× (max). If you're tempted to override X, it's almost always down, not up."
           />
 
           <Section
