@@ -207,6 +207,19 @@
   }
 
   /* ---------- hero ---------- */
+  .hero-logo {
+    display: block;
+    width: 96px;
+    height: 96px;
+    object-fit: contain;
+    margin-bottom: 28px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-logo { display: none; }
+  }
+  @media (max-width: 900px) {
+    .hero-logo { width: 72px; height: 72px; margin-bottom: 20px; }
+  }
   .hero {
     padding: 56px 0 96px;
     border-bottom: 1px solid var(--line);

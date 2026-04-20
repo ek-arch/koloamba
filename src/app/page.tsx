@@ -143,6 +143,17 @@ export default async function LandingPage() {
       {/* ---------- Hero ---------- */}
       <section className="hero">
         <div className="wrap">
+          <video
+            className="hero-logo"
+            src="/brand/kolo-logo.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            aria-hidden
+          />
+
           <div className="eyebrow">
             <span className="dot" aria-hidden />
             <span>
