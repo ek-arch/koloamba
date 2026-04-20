@@ -43,7 +43,7 @@ export default async function DashboardPage() {
   }
 
   const admin = supabaseAdmin();
-  const [myRow, board, campaign, mySubs] = await Promise.all([
+  const [myRow, board, campaign, mySubs, balanceRow] = await Promise.all([
     admin.from('leaderboard').select('*').eq('id', user.id).maybeSingle(),
     admin.from('leaderboard').select('id, weighted_score'),
     admin
@@ -58,6 +58,16 @@ export default async function DashboardPage() {
       .select('id, post_url, auto_score, moderator_score, final_score, status, created_at')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false }),
+    // Kolo mini-app balance snapshot, looked up by the user's linked Telegram handle.
+    // Returns null if they haven't linked a handle yet, or if their handle isn't in
+    // the snapshot (never touched the mini-app, or linked the wrong handle).
+    user.telegram_handle
+      ? admin
+          .from('kolo_balances')
+          .select('token_balance')
+          .ilike('telegram_handle', user.telegram_handle)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
   ]);
 
   const me =
@@ -203,10 +213,9 @@ export default async function DashboardPage() {
         <div style={{ marginTop: 24 }}>
           <SocialLinksCard
             telegramHandle={user.telegram_handle}
-            // TODO: when the Kolo replica DB is wired, look up balance by
-            // user.telegram_handle and pass here. Until then: null = not
-            // available / not yet synced.
-            tokenBalance={null}
+            tokenBalance={
+              balanceRow?.data ? Number(balanceRow.data.token_balance) : null
+            }
             redditUsername={user.reddit_username}
           />
         </div>
