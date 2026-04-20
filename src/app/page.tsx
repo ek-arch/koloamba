@@ -82,9 +82,9 @@ async function loadRecentSubmissions(): Promise<RecentSubmission[]> {
 }
 
 const TIERS = [
-  { key: 'bronze', name: 'Bronze', mult: '1.0×', range: '0–999 old points' },
-  { key: 'silver', name: 'Silver', mult: '1.2×', range: '1,000–4,999 old points' },
-  { key: 'gold',   name: 'Gold',   mult: '1.5×', range: '5,000+ old points' },
+  { key: 'bronze', name: 'Bronze', mult: '1.0×', range: '0 – 1,999 KOLO' },
+  { key: 'silver', name: 'Silver', mult: '1.3×', range: '2,000 – 49,999 KOLO' },
+  { key: 'gold',   name: 'Gold',   mult: '1.7×', range: '50,000+ KOLO' },
 ] as const;
 
 const STEPS = [
@@ -228,8 +228,8 @@ export default async function LandingPage() {
             className="section-lede"
             style={{ marginTop: -32, marginBottom: 40 }}
           >
-            Tier is set from your old points at campaign start. It multiplies every point you earn —
-            so loyal contributors compound across campaigns.
+            Tier is set from your KOLO balance at the close of the mini-app tap phase. It multiplies every
+            point you earn across ambassador campaigns — so loyal contributors compound.
           </p>
           <div className="tiers">
             {TIERS.map((t) => (
@@ -267,7 +267,7 @@ export default async function LandingPage() {
                 </div>
                 <div>
                   <dt>M</dt>
-                  <dd>tier multiplier — 1.0 / 1.2 / 1.5</dd>
+                  <dd>tier multiplier — 1.0 / 1.3 / 1.7 (from KOLO balance)</dd>
                 </div>
                 <div>
                   <dt>Σ(S × M)</dt>

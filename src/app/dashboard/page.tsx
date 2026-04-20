@@ -3,16 +3,10 @@ import { getCurrentUser } from '@/lib/session';
 import { supabaseAdmin } from '@/lib/supabase';
 import { RewardCalculator } from '@/components/dashboard/RewardCalculator';
 import { SocialLinksCard } from '@/components/dashboard/SocialLinksCard';
+import { TIER_UPPER } from '@/lib/tier';
 import type { Campaign, LeaderboardRow, Platform, Submission, Tier } from '@/types';
 
 export const revalidate = 0;
-
-// Matches the tier cutoffs in supabase/schema.sql / tier_config
-const TIER_UPPER: Record<Tier, number> = {
-  bronze: 1000,
-  silver: 5000,
-  gold: 50000,
-};
 
 const TIER_LABEL: Record<Tier, string> = {
   bronze: 'Bronze',
