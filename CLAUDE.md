@@ -53,7 +53,7 @@ Full spec: [docs/kolo-ambassador-spec.md](docs/kolo-ambassador-spec.md)
 5. ✅ **Phase 5 — Polish** — Reward calculator, auto-refresh leaderboard, responsive, edge cases
 6. ✅ **Phase 6 — Multi-platform scoring** — Reddit + Telegram submissions, per-platform scoring (X cap 30 w/ TS-50 saturation, Reddit cap 10, Telegram 0.5/1/2/3), moderator scoring guide modal
 7. 🟡 **Phase 7 — Dual-identity auth (X + Telegram)** — designed, deferred. See [docs/auth-multi-identity.md](docs/auth-multi-identity.md). **Blocked on:** Kolo Telegram bot creation + env vars.
-8. ⏸ **Phase 8 — Kolo replica integration** — wire token balance into dashboard. **Blocked on:** DB replica access.
+8. ✅ **Phase 8 — Kolo token balance (snapshot import)** — `kolo_balances` table in Supabase holds 3.25M rows imported from the mini-app backend dump; dashboard looks up balance by the user's linked Telegram handle. See [docs/session-2026-04-20.md](docs/session-2026-04-20.md).
 9. ⏸ **Phase 9 — Bulk CSV old_points import** — admin upload flow for onboarding Genesis-era users in bulk.
 
 Lower-priority follow-ups (no phase, pick up anytime): rate-limiting on `POST /api/submissions`, Supabase realtime subscriptions to replace 20s leaderboard polling.
