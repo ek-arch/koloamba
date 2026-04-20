@@ -37,7 +37,7 @@ export async function POST(req: Request) {
     .eq('id', session.user.id)
     .maybeSingle();
 
-  if (!userRow) return err('User record not found — sign in again', 401);
+  if (!userRow) return err('User record not found. Sign in again.', 401);
 
   // Ownership checks — soft (URL shape) + hard (provider author when known).
   // Enforcement is per-platform because each platform surfaces ownership

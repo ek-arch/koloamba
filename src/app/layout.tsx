@@ -28,7 +28,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Kolo Ambassadors — earn for creating content about Kolo',
+  title: 'Kolo Ambassadors · earn for creating content about Kolo',
   description:
     'For Kolo creators and early adopters. Submit posts across X, Reddit, and Telegram; your KOLO balance sets a tier multiplier on every reward.',
 };

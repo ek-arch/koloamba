@@ -176,7 +176,7 @@ export default async function DashboardPage() {
           </div>
 
           <div className="dash-card">
-            <div className="dash-label">Tier — {TIER_LABEL[user.tier]}</div>
+            <div className="dash-label">Tier · {TIER_LABEL[user.tier]}</div>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginTop: 4 }}>
               <span
                 style={{ fontSize: 48, fontWeight: 500, letterSpacing: '-0.035em' }}

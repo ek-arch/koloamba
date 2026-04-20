@@ -34,7 +34,7 @@ export async function POST(req: Request) {
   } else {
     username = raw.trim().replace(/^u\//i, '').replace(/^\//, '').toLowerCase();
     if (!USERNAME_RE.test(username)) {
-      return err('Invalid Reddit username — use 3–20 chars (letters, digits, _ or -).', 400);
+      return err('Invalid Reddit username. Use 3–20 chars (letters, digits, _ or -).', 400);
     }
   }
 

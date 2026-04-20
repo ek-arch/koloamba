@@ -20,7 +20,7 @@ export default function SubmitPage() {
           Before you submit
         </h3>
         <ul className="list-disc space-y-1 pl-5 text-sm text-muted">
-          <li>The post must be from your own account — X, Reddit, or Telegram.</li>
+          <li>The post must be from your own account (X, Reddit, or Telegram).</li>
           <li>Link your Reddit username and Telegram handle on the dashboard first.</li>
           <li>Each URL can only be submitted once.</li>
           <li>

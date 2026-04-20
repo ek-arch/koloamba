@@ -50,7 +50,7 @@ export async function Footer() {
         </div>
 
         <div className="footer-bottom">
-          <span>KOLO AMBASSADORS — GENESIS SPRINT</span>
+          <span>KOLO AMBASSADORS · GENESIS SPRINT</span>
           <span>©{new Date().getFullYear()}</span>
         </div>
       </div>

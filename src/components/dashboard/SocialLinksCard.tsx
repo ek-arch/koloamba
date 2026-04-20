@@ -75,7 +75,7 @@ export function SocialLinksCard({
         prefix="u/"
         placeholder="your_reddit_username"
         initialHandle={redditUsername}
-        hint="Links ownership — Reddit submissions must match this handle."
+        hint="Links ownership. Reddit submissions must match this handle."
       />
     </div>
   );

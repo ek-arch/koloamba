@@ -144,8 +144,8 @@ export default async function LandingPage() {
           <div className="hero-row">
             <div>
               <p className="hero-sub">
-                For Kolo creators and OGs. Post about Kolo on X, Reddit, or Telegram — get scored on
-                reach and credibility, earn your share of the pool. Your KOLO balance sets a tier
+                For Kolo creators and OGs. Post about Kolo on X, Reddit, or Telegram, get scored on
+                reach and credibility, and earn your share of the pool. Your KOLO balance sets a tier
                 multiplier.
               </p>
               <div className="hero-cta">
@@ -197,7 +197,7 @@ export default async function LandingPage() {
       <section id="how-it-works" className="section-block">
         <div className="wrap">
           <div className="section-head">
-            <div className="eyebrow">01 — how it works</div>
+            <div className="eyebrow">01 · how it works</div>
             <h2 className="section-title">
               Four steps between a tweet and a <em>payout.</em>
             </h2>
@@ -219,7 +219,7 @@ export default async function LandingPage() {
       <section id="tiers" className="section-block dark">
         <div className="wrap">
           <div className="section-head">
-            <div className="eyebrow">02 — tiers &amp; multipliers</div>
+            <div className="eyebrow">02 · tiers &amp; multipliers</div>
             <h2 className="section-title">
               Your KOLO balance <em>travels with you.</em>
             </h2>
@@ -229,7 +229,7 @@ export default async function LandingPage() {
             style={{ marginTop: -32, marginBottom: 40 }}
           >
             Tier is set from your KOLO balance at the close of the mini-app tap phase. If you&apos;re
-            a Kolo OG, you already have a multiplier waiting — it applies to every point you earn
+            a Kolo OG, you already have a multiplier waiting. It applies to every point you earn
             across ambassador campaigns, so early adopters compound over time.
           </p>
           <div className="tiers">
@@ -249,7 +249,7 @@ export default async function LandingPage() {
       <section id="formula" className="section-block">
         <div className="wrap">
           <div className="section-head">
-            <div className="eyebrow">03 — reward formula</div>
+            <div className="eyebrow">03 · reward formula</div>
             <h2 className="section-title">
               Math, in <em>plain sight.</em>
             </h2>
@@ -268,7 +268,7 @@ export default async function LandingPage() {
                 </div>
                 <div>
                   <dt>M</dt>
-                  <dd>tier multiplier — 1.0 / 1.3 / 1.7 (from KOLO balance)</dd>
+                  <dd>tier multiplier: 1.0 / 1.3 / 1.7 (from KOLO balance)</dd>
                 </div>
                 <div>
                   <dt>Σ(S × M)</dt>
@@ -320,12 +320,12 @@ export default async function LandingPage() {
             className="landing-cta"
           >
             <div>
-              <div className="eyebrow">04 — ready?</div>
+              <div className="eyebrow">04 · ready?</div>
               <h2 className="section-title" style={{ marginTop: 14 }}>
                 Sign in. <em>Start submitting.</em>
               </h2>
               <p className="section-lede" style={{ marginTop: 20 }}>
-                No forms. No approvals queue. Link your Telegram — if you&apos;re a Kolo OG, your
+                No forms. No approvals queue. Link your Telegram. If you&apos;re a Kolo OG, your
                 tier and multiplier show up instantly. Then submit your first post.
               </p>
               <div className="hero-cta" style={{ marginTop: 28 }}>
@@ -338,11 +338,11 @@ export default async function LandingPage() {
 
             <div style={{ borderLeft: '1px solid var(--line)', paddingLeft: 48 }}>
               <div className="mono-sm" style={{ marginBottom: 20 }}>
-                LIVE — recent submissions
+                LIVE · recent submissions
               </div>
               {recent.length === 0 ? (
                 <p className="text-sm text-muted">
-                  Be the first to submit — this list populates as posts get approved.
+                  Be the first to submit. This list populates as posts get approved.
                 </p>
               ) : (
                 recent.map((a, i) => (

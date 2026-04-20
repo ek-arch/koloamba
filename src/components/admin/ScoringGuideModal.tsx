@@ -51,7 +51,7 @@ export function ScoringGuideModal({ open, onClose, platform }: Props) {
 
         <div className="space-y-6 px-6 py-5 text-sm leading-relaxed">
           <section>
-            <h3 className="text-base font-semibold">Default rule — don&apos;t override</h3>
+            <h3 className="text-base font-semibold">Default rule: don&apos;t override</h3>
             <p className="mt-1 text-muted">
               On X and Reddit the auto-score already reflects measurable engagement.
               Leave it alone ~80% of the time. Override only when the formula misses
@@ -75,12 +75,12 @@ export function ScoringGuideModal({ open, onClose, platform }: Props) {
             ]}
             downReasons={[
               'Bot or farmed engagement (generic mass replies, weird like ratio)',
-              'Off-topic — post barely mentions Kolo, hashtag-stuffed',
+              'Off-topic: post barely mentions Kolo, hashtag-stuffed',
               'Recycled angle from a prior submission',
             ]}
             upReasons={[
               'Low engagement but high-quality educational thread',
-              'Verifiable off-platform impact (rare — usually not warranted)',
+              'Verifiable off-platform impact (rare; usually not warranted)',
             ]}
             heuristic="TwitterScore curve: TS 0 → 1× · TS 25 → 2× · TS 50+ → 3× (max). If you're tempted to override X, it's almost always down, not up."
           />
@@ -102,7 +102,7 @@ export function ScoringGuideModal({ open, onClose, platform }: Props) {
               'Comment thread is the ambassador replying to themselves',
             ]}
             upReasons={[
-              'Posted in a highly relevant niche sub — 30 ups in r/ethfinance > 200 in a generic crypto sub',
+              'Posted in a highly relevant niche sub: 30 ups in r/ethfinance beats 200 in a generic crypto sub',
               'Thoughtful long-form post that sparked real discussion',
             ]}
             heuristic="Context beats raw numbers on Reddit. A small niche sub can outweigh a generic big one."
@@ -131,7 +131,7 @@ export function ScoringGuideModal({ open, onClose, platform }: Props) {
               <Cell>&quot;🔥🔥🔥&quot;, &quot;great project&quot;, emoji dumps, one-word replies</Cell>
 
               <Cell mono>1.0</Cell>
-              <Cell>Baseline — showed up, engaged</Cell>
+              <Cell>Baseline: showed up, engaged</Cell>
               <Cell>Short on-topic comment, brief genuine reply</Cell>
 
               <Cell mono>2.0</Cell>
@@ -139,7 +139,7 @@ export function ScoringGuideModal({ open, onClose, platform }: Props) {
               <Cell>Multi-sentence comment that adds info, answers a question, tags people meaningfully</Cell>
 
               <Cell mono>3.0</Cell>
-              <Cell>Exceptional — rare</Cell>
+              <Cell>Exceptional, rare</Cell>
               <Cell>Thread-starter in a big public group that drew 10+ replies, or pinned/highlighted explainer</Cell>
             </div>
 
@@ -156,7 +156,7 @@ export function ScoringGuideModal({ open, onClose, platform }: Props) {
               <li>Open the link. Read the actual post.</li>
               <li>
                 Ask: &quot;does this deserve more or less than the auto-score says?&quot;
-                If you can&apos;t articulate why — leave it auto and move on.
+                If you can&apos;t articulate why, leave it auto and move on.
               </li>
               <li>Use the notes field to log <em>why</em> you adjusted.</li>
             </ol>

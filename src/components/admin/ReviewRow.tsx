@@ -32,7 +32,7 @@ const TELEGRAM_PRESETS = [
   { value: 0.5, label: 'Low effort / thin comment' },
   { value: 1,   label: 'Baseline (auto-score)' },
   { value: 2,   label: 'Solid contribution' },
-  { value: 3,   label: 'Exceptional — max' },
+  { value: 3,   label: 'Exceptional (max)' },
 ];
 
 export function ReviewRow({ submission }: { submission: ReviewSubmission }) {
@@ -178,7 +178,7 @@ export function ReviewRow({ submission }: { submission: ReviewSubmission }) {
           />
           <Metric
             label="Signal"
-            value="no external metrics — open link to review"
+            value="no external metrics. Open link to review."
           />
         </div>
       )}

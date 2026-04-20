@@ -37,7 +37,7 @@ export async function POST(req: Request) {
     handle = raw.trim().replace(/^@/, '').toLowerCase();
     if (!HANDLE_RE.test(handle)) {
       return err(
-        'Invalid Telegram handle — use 5–32 chars (letters, digits, underscores; must start with a letter).',
+        'Invalid Telegram handle. Use 5–32 chars (letters, digits, underscores; must start with a letter).',
         400,
       );
     }

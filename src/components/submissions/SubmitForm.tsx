@@ -22,7 +22,7 @@ const PLATFORMS: { k: Platform; label: string; placeholder: string; hint: string
     k: 'telegram',
     label: 'Telegram',
     placeholder: 'https://t.me/channel/123  or  t.me/channel/123?comment=456',
-    hint: 'Scored manually by a moderator — posts in public channels, comments in groups, all work.',
+    hint: 'Scored manually by a moderator. Posts in public channels, comments in groups, all work.',
   },
 ];
 

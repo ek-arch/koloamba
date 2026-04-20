@@ -51,7 +51,7 @@ export function RewardCalculator({
     <div className="calc">
       <h3>Reward calculator</h3>
       <div className="calc-sub">
-        Slide to set a target — see what it takes to get there.
+        Slide to set a target. See what it takes to get there.
       </div>
 
       <div className="slider-row">
@@ -79,7 +79,7 @@ export function RewardCalculator({
           className="mono-sm"
           style={{ color: 'var(--muted)', lineHeight: 1.5 }}
         >
-          Locked — set by your KOLO balance.
+          Locked. Set by your KOLO balance.
         </div>
       </div>
 
