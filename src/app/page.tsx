@@ -144,10 +144,9 @@ export default async function LandingPage() {
           <div className="hero-row">
             <div>
               <p className="hero-sub">
-                An ongoing program for Kolo creators and early adopters. Paste a tweet, Reddit post,
-                or Telegram message you wrote about Kolo, get scored on reach and credibility, and
-                earn your share of the reward pool. If you&apos;re a Kolo OG, your KOLO balance
-                already earns you a tier multiplier.
+                For Kolo creators and OGs. Post about Kolo on X, Reddit, or Telegram — get scored on
+                reach and credibility, earn your share of the pool. Your KOLO balance sets a tier
+                multiplier.
               </p>
               <div className="hero-cta">
                 {signInCta}
