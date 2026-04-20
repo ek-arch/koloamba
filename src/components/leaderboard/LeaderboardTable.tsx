@@ -131,11 +131,11 @@ export function LeaderboardTable({ rows, totalWeighted, pool, currentUserId }: P
                     </div>
                     <div
                       className="mono-sm"
-                      title="TwitterScore × on X posts · tier multiplier on final weighted score"
+                      title="Credibility boost from TwitterScore applies to X posts only. Tier multiplier (from KOLO balance) applies to the final weighted score."
                     >
-                      X ×{twitterCredibilityMultiplier(Number(r.twitter_score)).toFixed(1)}
+                      cred ×{twitterCredibilityMultiplier(Number(r.twitter_score)).toFixed(2)}
                       {' · '}
-                      tier ×{Number(r.tier_multiplier).toFixed(1)}
+                      tier ×{Number(r.tier_multiplier).toFixed(2)}
                     </div>
                   </div>
                 </div>

@@ -175,16 +175,18 @@ export default async function DashboardPage() {
                 <div className="k">TwitterScore</div>
                 <div className="v">
                   {Number(user.twitter_score).toFixed(0)}
-                  <span
-                    style={{
-                      fontSize: 16,
-                      marginLeft: 8,
-                      color: 'var(--muted)',
-                      fontWeight: 400,
-                    }}
-                  >
-                    ×{twitterCredibilityMultiplier(Number(user.twitter_score)).toFixed(1)} on X
-                  </span>
+                </div>
+                <div
+                  style={{
+                    fontSize: 12,
+                    marginTop: 4,
+                    color: 'var(--muted)',
+                    fontFamily:
+                      'var(--font-jetbrains-mono), ui-monospace, monospace',
+                  }}
+                >
+                  ×{twitterCredibilityMultiplier(Number(user.twitter_score)).toFixed(2)}{' '}
+                  credibility boost on X posts
                 </div>
               </div>
             </div>
