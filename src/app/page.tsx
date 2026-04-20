@@ -144,9 +144,10 @@ export default async function LandingPage() {
           <div className="hero-row">
             <div>
               <p className="hero-sub">
-                An ongoing ambassador program. Paste a tweet, Reddit post, or Telegram message you
-                wrote about Kolo, get scored on reach and credibility, and earn your share of the
-                reward pool.
+                An ongoing program for Kolo creators and early farmers. Paste a tweet, Reddit post,
+                or Telegram message you wrote about Kolo, get scored on reach and credibility, and
+                earn your share of the reward pool. If you farmed the mini-app, your KOLO balance
+                already earns you a tier multiplier — two years of tapping counts.
               </p>
               <div className="hero-cta">
                 {signInCta}
@@ -221,15 +222,16 @@ export default async function LandingPage() {
           <div className="section-head">
             <div className="eyebrow">02 — tiers &amp; multipliers</div>
             <h2 className="section-title">
-              Your prior contribution <em>travels with you.</em>
+              Two years of farming <em>travels with you.</em>
             </h2>
           </div>
           <p
             className="section-lede"
             style={{ marginTop: -32, marginBottom: 40 }}
           >
-            Tier is set from your KOLO balance at the close of the mini-app tap phase. It multiplies every
-            point you earn across ambassador campaigns — so loyal contributors compound.
+            Tier is set from your KOLO balance at the close of the mini-app tap phase. If you farmed, you
+            already have a multiplier waiting — it applies to every point you earn across ambassador
+            campaigns, so early adopters compound over time.
           </p>
           <div className="tiers">
             {TIERS.map((t) => (
@@ -324,8 +326,8 @@ export default async function LandingPage() {
                 Sign in. <em>Start submitting.</em>
               </h2>
               <p className="section-lede" style={{ marginTop: 20 }}>
-                No forms. No approvals queue. We pull your handle and TwitterScore on first submit
-                and you&apos;re in.
+                No forms. No approvals queue. Link your Telegram — if you farmed the mini-app, your
+                tier and multiplier show up instantly. Then submit your first post.
               </p>
               <div className="hero-cta" style={{ marginTop: 28 }}>
                 {signInCta}

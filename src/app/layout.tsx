@@ -28,9 +28,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Kolo Ambassadors — Genesis Sprint',
+  title: 'Kolo Ambassadors — earn for creating content about Kolo',
   description:
-    'Earn rewards by creating content about Kolo. Join the Genesis Sprint ambassador program.',
+    'For Kolo creators and mini-app farmers. Submit posts across X, Reddit, and Telegram; your farmed KOLO balance sets a tier multiplier on every reward.',
 };
 
 export default function RootLayout({
