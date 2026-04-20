@@ -10,7 +10,10 @@ interface ProgramStatus {
   pool: number;
   ambassadors: number;
   postsApproved: number;
-  avgScore: number;
+  campaignName: string | null;
+  startDate: string | null;
+  endDate: string | null;
+  daysLeft: number | null;
 }
 
 interface RecentSubmission {
@@ -22,10 +25,10 @@ interface RecentSubmission {
 async function loadProgramStatus(): Promise<ProgramStatus> {
   const sb = supabaseAdmin();
 
-  const [campaignRes, ambassadorsRes, submissionsRes, scoresRes] = await Promise.all([
+  const [campaignRes, ambassadorsRes, submissionsRes] = await Promise.all([
     sb
       .from('campaigns')
-      .select('pool_amount, status')
+      .select('name, pool_amount, start_date, end_date, status')
       .eq('status', 'active')
       .order('start_date', { ascending: false })
       .limit(1)
@@ -38,23 +41,27 @@ async function loadProgramStatus(): Promise<ProgramStatus> {
       .from('submissions')
       .select('id', { count: 'exact', head: true })
       .eq('status', 'approved'),
-    sb
-      .from('submissions')
-      .select('final_score')
-      .eq('status', 'approved'),
   ]);
 
-  const scores = (scoresRes.data ?? []) as { final_score: number | null }[];
-  const avgScore =
-    scores.length === 0
-      ? 0
-      : scores.reduce((a, s) => a + (s.final_score ?? 0), 0) / scores.length;
+  const endDate = campaignRes.data?.end_date ?? null;
+  const daysLeft =
+    endDate
+      ? Math.max(
+          0,
+          Math.ceil(
+            (new Date(endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24),
+          ),
+        )
+      : null;
 
   return {
-    pool: campaignRes.data?.pool_amount ?? 5000,
-    ambassadors: ambassadorsRes.count ?? 0,
+    pool:          campaignRes.data?.pool_amount ?? 5000,
+    ambassadors:   ambassadorsRes.count ?? 0,
     postsApproved: submissionsRes.count ?? 0,
-    avgScore,
+    campaignName:  campaignRes.data?.name ?? null,
+    startDate:     campaignRes.data?.start_date ?? null,
+    endDate,
+    daysLeft,
   };
 }
 
@@ -79,6 +86,13 @@ async function loadRecentSubmissions(): Promise<RecentSubmission[]> {
         minutesAgo: Math.max(1, Math.round((now - new Date(r.created_at).getTime()) / 60000)),
       };
     });
+}
+
+// "May 1 – Jun 1" — uses en-dash, not em-dash (em-dashes are stripped
+// across the app per copy convention; en-dash is correct for date ranges).
+function formatDateRange(start: string, end: string): string {
+  const fmt = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' });
+  return `${fmt.format(new Date(start))} – ${fmt.format(new Date(end))}`;
 }
 
 const TIERS = [
@@ -132,7 +146,13 @@ export default async function LandingPage() {
           <div className="eyebrow">
             <span className="dot" aria-hidden />
             <span>
-              genesis · ambassador program · pool{' '}
+              {status.campaignName
+                ? `${status.campaignName.toLowerCase()} · `
+                : 'active campaign · '}
+              {status.startDate && status.endDate
+                ? `${formatDateRange(status.startDate, status.endDate)} · `
+                : ''}
+              pool{' '}
               <b style={{ color: 'var(--ink)' }}>${status.pool.toLocaleString()}</b>
             </span>
           </div>
@@ -175,9 +195,9 @@ export default async function LandingPage() {
                 <div className="stat-value mono">{status.postsApproved.toLocaleString()}</div>
               </div>
               <div className="stat">
-                <div className="stat-label">Avg score</div>
+                <div className="stat-label">Days left</div>
                 <div className="stat-value mono">
-                  {status.avgScore > 0 ? status.avgScore.toFixed(1) : '—'}
+                  {status.daysLeft === null ? '—' : status.daysLeft}
                 </div>
               </div>
             </div>
@@ -190,7 +210,7 @@ export default async function LandingPage() {
         pool={status.pool}
         ambassadors={status.ambassadors}
         postsApproved={status.postsApproved}
-        avgScore={status.avgScore || undefined}
+        daysLeft={status.daysLeft ?? undefined}
       />
 
       {/* ---------- 01 · How it works ---------- */}
@@ -259,7 +279,8 @@ export default async function LandingPage() {
               <p className="section-lede" style={{ marginTop: 0, marginBottom: 20 }}>
                 Your share of the pool is proportional to your weighted score vs. everyone
                 else&apos;s. The calculator on your dashboard updates in real time as submissions are
-                approved.
+                approved. Each campaign runs for a fixed window (typically a month), then the pool
+                resets for the next one.
               </p>
               <dl className="formula-legend">
                 <div>

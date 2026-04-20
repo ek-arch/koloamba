@@ -2,20 +2,19 @@ interface TickerProps {
   pool: number;
   ambassadors: number;
   postsApproved: number;
-  avgScore?: number;
+  daysLeft?: number;
   lastPayout?: { amount: number; handle: string } | null;
 }
 
 /**
- * Full-bleed black ticker — CSS-animated (42s linear scroll via .ticker-track).
+ * Full-bleed black ticker, CSS-animated (42s linear scroll via .ticker-track).
  * Items render 3× so the -50% translateX loop is seamless.
- * Program is ongoing, so no sprint-day / days-left framing.
  */
 export function Ticker({
   pool,
   ambassadors,
   postsApproved,
-  avgScore,
+  daysLeft,
   lastPayout,
 }: TickerProps) {
   const items: React.ReactNode[] = [
@@ -32,10 +31,10 @@ export function Ticker({
       <b>Posts approved</b> <em>{postsApproved.toLocaleString()}</em>
     </>,
   ];
-  if (avgScore !== undefined) {
+  if (daysLeft !== undefined) {
     items.push(
       <>
-        <b>Avg score</b> <em>{avgScore.toFixed(1)}</em>
+        <b>Days left</b> <em>{daysLeft}</em>
       </>
     );
   }
@@ -48,7 +47,7 @@ export function Ticker({
   }
   items.push(
     <>
-      <b>Tier caps</b> <span>bronze 1.0×</span> <span>silver 1.2×</span> <span>gold 1.5×</span>
+      <b>Tier multipliers</b> <span>bronze 1.0×</span> <span>silver 1.3×</span> <span>gold 1.7×</span>
     </>
   );
 
