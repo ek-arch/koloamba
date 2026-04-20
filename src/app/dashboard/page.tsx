@@ -3,7 +3,9 @@ import { getCurrentUser } from '@/lib/session';
 import { supabaseAdmin } from '@/lib/supabase';
 import { RewardCalculator } from '@/components/dashboard/RewardCalculator';
 import { SocialLinksCard } from '@/components/dashboard/SocialLinksCard';
+import { WalletCard } from '@/components/dashboard/WalletCard';
 import { TIER_UPPER } from '@/lib/tier';
+import type { WalletChain, WalletToken } from '@/lib/wallet';
 import type { Campaign, LeaderboardRow, Platform, Submission, Tier } from '@/types';
 
 export const revalidate = 0;
@@ -211,6 +213,15 @@ export default async function DashboardPage() {
               balanceRow?.data ? Number(balanceRow.data.token_balance) : null
             }
             redditUsername={user.reddit_username}
+          />
+        </div>
+
+        {/* ----- Payout wallet ----- */}
+        <div style={{ marginTop: 24 }}>
+          <WalletCard
+            initialAddress={user.wallet_address}
+            initialChain={user.wallet_chain as WalletChain | null}
+            initialToken={user.wallet_token as WalletToken | null}
           />
         </div>
 

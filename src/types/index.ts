@@ -18,6 +18,8 @@ export interface User {
   tier: Tier;
   tier_multiplier: number;
   wallet_address: string | null;
+  wallet_chain: 'bnb' | 'arbitrum' | 'base' | null;
+  wallet_token: 'usdc' | 'usdt' | null;
   telegram_handle: string | null;
   reddit_username: string | null;
   role: Role;
