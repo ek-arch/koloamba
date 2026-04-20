@@ -486,6 +486,7 @@
     background: var(--ink);
     position: relative;
     flex: none;
+    overflow: hidden;
   }
   .brand-mark::after {
     content: '';
@@ -494,6 +495,20 @@
     border-radius: 50%;
     background: var(--bg);
     border: 1.5px solid var(--ink);
+  }
+  /* Looping logo video sits on top of the static ::after mark; if the
+     browser can't autoplay or the user prefers reduced motion, the
+     static CSS glyph remains visible underneath. */
+  .brand-mark-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .brand-mark-video { display: none; }
   }
 
   /* ---------- leaderboard avatar (also used on landing live feed) ---------- */
