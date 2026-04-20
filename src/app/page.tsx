@@ -292,7 +292,7 @@ export default async function LandingPage() {
                 <span className="c-m">{'// worked example'}</span>
               </div>
               <div>
-                <span className="c-m">S =</span> 34, <span className="c-m">M =</span> 1.2× (silver)
+                <span className="c-m">S =</span> 34, <span className="c-m">M =</span> 1.3× (silver)
               </div>
               <div>
                 <span className="c-m">Σ =</span> 9,420,{' '}
@@ -300,7 +300,7 @@ export default async function LandingPage() {
               </div>
               <div style={{ marginTop: 6 }}>
                 <span className="c-k">Reward ≈</span> $
-                {(((34 * 1.2) / (9420 + 34 * 1.2)) * status.pool).toFixed(2)}
+                {(((34 * 1.3) / (9420 + 34 * 1.3)) * status.pool).toFixed(2)}
               </div>
             </div>
           </div>
