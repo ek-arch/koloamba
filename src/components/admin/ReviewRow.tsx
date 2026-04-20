@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { StatusBadge } from '@/components/ui/Badge';
 import { TierBadge } from '@/components/dashboard/TierBadge';
 import { ScoringGuideModal } from '@/components/admin/ScoringGuideModal';
+import { ScoreBreakdown } from '@/components/admin/ScoreBreakdown';
 import type { Platform, Submission, Tier } from '@/types';
 
 type ReviewSubmission = Submission & {
@@ -44,6 +45,7 @@ export function ReviewRow({ submission }: { submission: ReviewSubmission }) {
   const [notes, setNotes] = useState<string>(submission.moderator_notes ?? '');
   const [err, setErr] = useState<string | null>(null);
   const [guideOpen, setGuideOpen] = useState(false);
+  const [showMath, setShowMath] = useState(false);
 
   async function patch(body: Record<string, unknown>) {
     setErr(null);
@@ -184,12 +186,24 @@ export function ReviewRow({ submission }: { submission: ReviewSubmission }) {
       )}
 
       <div className="grid gap-3 sm:grid-cols-[1fr_2fr_auto]">
-        <label className="text-sm">
-          <span className="stat-label">Auto-score</span>
+        <div className="text-sm">
+          <span className="stat-label inline-flex items-center gap-1.5">
+            Auto-score
+            <button
+              type="button"
+              onClick={() => setShowMath((s) => !s)}
+              title={showMath ? 'Hide math' : 'Show how this was calculated'}
+              aria-label="Toggle scoring math"
+              aria-expanded={showMath}
+              className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-border text-[10px] font-semibold text-muted transition hover:border-bg-invert hover:text-text-primary"
+            >
+              i
+            </button>
+          </span>
           <div className="mt-1 rounded-xs border border-border bg-bg-card px-3 py-2 font-mono">
             {Number(submission.auto_score).toFixed(2)}
           </div>
-        </label>
+        </div>
         <label className="text-sm">
           <span className="stat-label inline-flex items-center gap-1.5">
             Override score (optional)
@@ -271,6 +285,18 @@ export function ReviewRow({ submission }: { submission: ReviewSubmission }) {
           </button>
         </div>
       </div>
+
+      {showMath && (
+        <ScoreBreakdown
+          platform={submission.platform}
+          likes={submission.likes}
+          retweets={submission.retweets}
+          replies={submission.replies}
+          views={submission.views}
+          twitterScore={Number(u?.twitter_score ?? 0)}
+          autoScore={Number(submission.auto_score)}
+        />
+      )}
 
       <label className="block text-sm">
         <span className="stat-label">Notes</span>
