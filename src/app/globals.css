@@ -213,6 +213,10 @@
     height: 96px;
     object-fit: contain;
     margin-bottom: 28px;
+    /* MP4 has no alpha channel. Blend-mode difference knocks out the
+       black background against the light page bg — blacks merge with
+       the page (disappear), whites invert to dark (logo visible). */
+    mix-blend-mode: difference;
   }
   @media (prefers-reduced-motion: reduce) {
     .hero-logo { display: none; }
@@ -495,19 +499,17 @@
   }
   .brand-mark {
     width: 36px; height: 36px;
-    border-radius: 50%;
     position: relative;
     flex: none;
-    overflow: hidden;
   }
-  /* Static fallback — a drawn concentric ring that shows if the video
-     can't autoplay or the user opts into prefers-reduced-motion. */
+  /* Static reduced-motion fallback: concentric rings drawn in CSS. */
   .brand-mark::before {
     content: '';
     position: absolute;
     inset: 0;
     border-radius: 50%;
     background: var(--ink);
+    display: none;
   }
   .brand-mark::after {
     content: '';
@@ -516,21 +518,22 @@
     border-radius: 50%;
     background: var(--bg);
     border: 1.5px solid var(--ink);
+    display: none;
   }
-  /* Video covers the static fallback. object-fit:contain preserves the
-     logo's padding so no cropping artifacts. */
+  /* Video with mix-blend-mode: difference knocks the mp4's black
+     background out against the light navbar (same trick as hero-logo). */
   .brand-mark-video {
-    position: absolute;
-    inset: 0;
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: contain;
     pointer-events: none;
-    z-index: 1;
-    background: var(--bg);
+    mix-blend-mode: difference;
   }
   @media (prefers-reduced-motion: reduce) {
     .brand-mark-video { display: none; }
+    .brand-mark::before,
+    .brand-mark::after { display: block; }
   }
 
   /* ---------- leaderboard avatar (also used on landing live feed) ---------- */
