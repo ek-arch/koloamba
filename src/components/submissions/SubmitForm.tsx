@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { detectPlatformFromUrl } from '@/lib/url-parser';
+import { twitterCredibilityMultiplier } from '@/lib/scoring';
 import type { Platform } from '@/types';
 
 const PLATFORMS: { k: Platform; label: string; placeholder: string; hint: string }[] = [
@@ -26,7 +27,7 @@ const PLATFORMS: { k: Platform; label: string; placeholder: string; hint: string
   },
 ];
 
-export function SubmitForm() {
+export function SubmitForm({ twitterScore = 0 }: { twitterScore?: number }) {
   const router = useRouter();
   const [url, setUrl] = useState('');
   const [manualPlatform, setManualPlatform] = useState<Platform | null>(null);
@@ -36,6 +37,7 @@ export function SubmitForm() {
   const detected = useMemo(() => detectPlatformFromUrl(url), [url]);
   const active: Platform = manualPlatform ?? detected ?? 'x';
   const activeMeta = PLATFORMS.find((p) => p.k === active)!;
+  const xMultiplier = twitterCredibilityMultiplier(twitterScore);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -97,6 +99,13 @@ export function SubmitForm() {
           className="w-full rounded-xs border border-border bg-white px-4 py-2.5 font-mono text-text-primary placeholder:text-muted focus:border-bg-invert focus:outline-none focus:ring-1 focus:ring-accent"
         />
         <p className="mt-1 text-xs text-muted">{activeMeta.hint}</p>
+        {active === 'x' && (
+          <p className="mt-1 text-xs text-muted">
+            Your TwitterScore is <b>{twitterScore.toFixed(0)}</b>, giving X posts a{' '}
+            <b style={{ color: 'var(--ink)' }}>×{xMultiplier.toFixed(2)}</b> credibility boost on
+            top of engagement.
+          </p>
+        )}
       </div>
 
       <button type="submit" disabled={busy} className="btn-primary disabled:opacity-50">

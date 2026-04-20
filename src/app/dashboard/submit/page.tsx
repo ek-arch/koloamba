@@ -1,6 +1,10 @@
 import { SubmitForm } from '@/components/submissions/SubmitForm';
+import { getCurrentUser } from '@/lib/session';
 
-export default function SubmitPage() {
+export default async function SubmitPage() {
+  const user = await getCurrentUser();
+  const twitterScore = user ? Number(user.twitter_score) : 0;
+
   return (
     <main className="mx-auto max-w-3xl space-y-6 px-6 py-10">
       <div>
@@ -12,7 +16,7 @@ export default function SubmitPage() {
       </div>
 
       <div className="card">
-        <SubmitForm />
+        <SubmitForm twitterScore={twitterScore} />
       </div>
 
       <div className="card space-y-2">

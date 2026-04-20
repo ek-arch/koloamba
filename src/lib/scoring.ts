@@ -57,6 +57,23 @@ export function computeAutoScore(
 const TWITTER_CREDIBILITY_SATURATION = 50;
 const TWITTER_CREDIBILITY_GAIN = 2;
 
+/**
+ * The multiplier TwitterScore applies to X post engagement. Exposed as its
+ * own helper so the dashboard, leaderboard, and submit page can show users
+ * exactly what advantage their TS buys them before they post.
+ *
+ *   TS 0  → 1.0×
+ *   TS 25 → 2.0×
+ *   TS 50+ → 3.0×
+ */
+export function twitterCredibilityMultiplier(twitterScore: number): number {
+  const weight = Math.min(
+    Math.max(twitterScore, 0) / TWITTER_CREDIBILITY_SATURATION,
+    1,
+  );
+  return 1 + weight * TWITTER_CREDIBILITY_GAIN;
+}
+
 function scoreX(e: PostEngagement, twitterScore: number): ScoreBreakdown {
   const raw = e.likes + e.retweets * 2 + e.replies * 1.5 + e.views * 0.01;
   const engagementScore = Math.min(raw / 100, 10);

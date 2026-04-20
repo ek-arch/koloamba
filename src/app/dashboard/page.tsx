@@ -5,6 +5,7 @@ import { RewardCalculator } from '@/components/dashboard/RewardCalculator';
 import { SocialLinksCard } from '@/components/dashboard/SocialLinksCard';
 import { WalletCard } from '@/components/dashboard/WalletCard';
 import { TIER_UPPER } from '@/lib/tier';
+import { twitterCredibilityMultiplier } from '@/lib/scoring';
 import type { WalletChain, WalletToken } from '@/lib/wallet';
 import type { Campaign, LeaderboardRow, Platform, Submission, Tier } from '@/types';
 
@@ -172,7 +173,19 @@ export default async function DashboardPage() {
               </div>
               <div>
                 <div className="k">TwitterScore</div>
-                <div className="v">{Number(user.twitter_score).toFixed(0)}</div>
+                <div className="v">
+                  {Number(user.twitter_score).toFixed(0)}
+                  <span
+                    style={{
+                      fontSize: 16,
+                      marginLeft: 8,
+                      color: 'var(--muted)',
+                      fontWeight: 400,
+                    }}
+                  >
+                    ×{twitterCredibilityMultiplier(Number(user.twitter_score)).toFixed(1)} on X
+                  </span>
+                </div>
               </div>
             </div>
           </div>

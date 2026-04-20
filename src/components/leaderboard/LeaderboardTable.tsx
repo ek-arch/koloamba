@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Image from 'next/image';
+import { twitterCredibilityMultiplier } from '@/lib/scoring';
 import type { LeaderboardRow, Tier } from '@/types';
 
 type TabKey = 'all' | Tier;
@@ -128,9 +129,13 @@ export function LeaderboardTable({ rows, totalWeighted, pool, currentUserId }: P
                         <span className="ml-2 text-xs font-normal text-accent">(you)</span>
                       )}
                     </div>
-                    <div className="mono-sm">
-                      TS {Number(r.twitter_score).toFixed(0)} · ×
-                      {Number(r.tier_multiplier).toFixed(1)}
+                    <div
+                      className="mono-sm"
+                      title="TwitterScore × on X posts · tier multiplier on final weighted score"
+                    >
+                      X ×{twitterCredibilityMultiplier(Number(r.twitter_score)).toFixed(1)}
+                      {' · '}
+                      tier ×{Number(r.tier_multiplier).toFixed(1)}
                     </div>
                   </div>
                 </div>
