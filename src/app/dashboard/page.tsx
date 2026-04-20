@@ -311,7 +311,8 @@ export default async function DashboardPage() {
 
           <RewardCalculator
             initialPoints={Math.min(100, Number(me.total_points))}
-            initialTier={user.tier}
+            tier={user.tier}
+            multiplier={Number(user.tier_multiplier)}
             sigmaOthers={sigmaOthers}
             pool={pool}
           />
