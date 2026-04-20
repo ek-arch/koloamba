@@ -20,7 +20,7 @@ export default async function UsersPage() {
       <div>
         <h1 className="text-3xl font-bold">Users</h1>
         <p className="mt-1 text-muted">
-          {users.length} total. Adjust tier, old points
+          {users.length} total. Adjust tier, KOLO points
           {canChangeRole ? ', or role' : ' (role changes require admin)'}.
         </p>
       </div>

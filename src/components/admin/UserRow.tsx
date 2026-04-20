@@ -28,7 +28,7 @@ export function UserRow({ user, canChangeRole }: { user: User; canChangeRole: bo
 
     const n = Number(oldPoints);
     if (!Number.isFinite(n) || n < 0) {
-      setErr('Old points must be a non-negative number');
+      setErr('KOLO points must be a non-negative number');
       return;
     }
 
@@ -86,7 +86,7 @@ export function UserRow({ user, canChangeRole }: { user: User; canChangeRole: bo
       </label>
 
       <label className="text-sm">
-        <span className="stat-label">Old points</span>
+        <span className="stat-label">KOLO points</span>
         <input
           type="number"
           min="0"

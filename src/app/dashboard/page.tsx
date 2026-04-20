@@ -189,7 +189,7 @@ export default async function DashboardPage() {
             </div>
             <div className="tier-progress">
               <div className="tier-meta">
-                <span>{Number(user.old_points).toLocaleString()} old pts</span>
+                <span>{Number(user.old_points).toLocaleString()} KOLO</span>
                 <span>
                   {next
                     ? `${upperBound.toLocaleString()} to ${TIER_LABEL[next].toLowerCase()}`
