@@ -105,7 +105,19 @@
                 filter var(--motion-instant) ease;
   }
   .btn:active { transform: translateY(1px); }
-  .btn-lg { height: 64px; padding: 0 36px; font-size: 17px; border-radius: var(--radius-md); }
+  /* .btn.btn-lg compound selector + longhand padding so we out-specify
+     Tailwind's generated padding-left/right in .btn-primary / .btn-accent,
+     which would otherwise make variant buttons narrower than .btn-ghost. */
+  .btn.btn-lg,
+  .btn-lg {
+    height: 64px;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 36px;
+    padding-right: 36px;
+    font-size: 17px;
+    border-radius: var(--radius-md);
+  }
 
   .btn-primary {
     @apply inline-flex items-center justify-center whitespace-nowrap rounded-xs bg-bg-invert px-5 py-2.5
