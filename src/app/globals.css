@@ -884,7 +884,7 @@
     margin: 0 0 16px;
     font-weight: 500;
   }
-  .footer a {
+  .footer a:not(.btn) {
     display: block;
     font-size: 14px;
     color: var(--bg);
@@ -892,7 +892,7 @@
     padding: 6px 0;
     transition: opacity 160ms ease;
   }
-  .footer a:hover { opacity: 1; }
+  .footer a:not(.btn):hover { opacity: 1; }
   .footer-lede {
     font-size: clamp(28px, 3vw, 44px);
     letter-spacing: -0.03em;
