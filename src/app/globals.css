@@ -105,7 +105,7 @@
                 filter var(--motion-instant) ease;
   }
   .btn:active { transform: translateY(1px); }
-  .btn-lg { height: 56px; padding: 0 28px; font-size: 16px; border-radius: var(--radius-md); }
+  .btn-lg { height: 64px; padding: 0 36px; font-size: 17px; border-radius: var(--radius-md); }
 
   .btn-primary {
     @apply inline-flex items-center justify-center whitespace-nowrap rounded-xs bg-bg-invert px-5 py-2.5
