@@ -249,7 +249,7 @@
   .headline .accent-word { color: var(--accent); }
   @media (max-width: 640px) {
     .headline {
-      font-size: clamp(38px, 10vw, 63px);
+      font-size: clamp(43px, 11.2vw, 71px);
       letter-spacing: -0.03em;
       line-height: 1.3;
     }
