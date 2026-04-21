@@ -238,7 +238,8 @@
   }
   .headline em {
     font-style: normal;
-    color: var(--accent);
+    background: linear-gradient(transparent 62%, color-mix(in srgb, var(--accent) 55%, transparent) 62%);
+    padding: 0 0.08em;
   }
   .headline .accent-word { color: var(--accent); }
   .hero-row {
@@ -336,7 +337,8 @@
   }
   .section-title em {
     font-style: normal;
-    color: var(--accent);
+    background: linear-gradient(transparent 62%, color-mix(in srgb, var(--accent) 55%, transparent) 62%);
+    padding: 0 0.08em;
   }
   .section-lede {
     font-size: 17px;
@@ -940,7 +942,8 @@
   }
   .footer-lede em {
     font-style: normal;
-    color: var(--accent);
+    background: linear-gradient(transparent 62%, color-mix(in srgb, var(--accent) 55%, transparent) 62%);
+    padding: 0 0.08em;
   }
   .footer-bottom {
     display: flex;

@@ -221,7 +221,7 @@ function Section({
         </div>
       </div>
 
-      <p className="text-xs text-accent">{heuristic}</p>
+      <p className="text-xs text-muted">{heuristic}</p>
     </section>
   );
 }
