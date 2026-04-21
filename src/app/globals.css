@@ -229,7 +229,7 @@
     border-bottom: 1px solid var(--line);
   }
   .headline {
-    font-size: clamp(32px, 7vw, 128px);
+    font-size: clamp(44px, 7.7vw, 141px);
     line-height: 0.95;
     letter-spacing: -0.045em;
     font-weight: 500;
