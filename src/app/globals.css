@@ -237,10 +237,8 @@
     text-wrap: balance;
   }
   .headline em {
-    font-family: var(--font-instrument-serif), Georgia, serif;
-    font-style: italic;
-    font-weight: 400;
-    letter-spacing: -0.015em;
+    font-style: normal;
+    color: var(--accent);
   }
   .headline .accent-word { color: var(--accent); }
   .hero-row {
@@ -337,9 +335,8 @@
     text-wrap: balance;
   }
   .section-title em {
-    font-family: var(--font-instrument-serif), Georgia, serif;
-    font-style: italic;
-    font-weight: 400;
+    font-style: normal;
+    color: var(--accent);
   }
   .section-lede {
     font-size: 17px;
@@ -942,9 +939,8 @@
     margin: 0 0 24px;
   }
   .footer-lede em {
-    font-family: var(--font-instrument-serif), Georgia, serif;
-    font-style: italic;
-    font-weight: 400;
+    font-style: normal;
+    color: var(--accent);
   }
   .footer-bottom {
     display: flex;
