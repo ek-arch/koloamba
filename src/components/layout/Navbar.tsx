@@ -18,10 +18,7 @@ export async function Navbar() {
           href="/"
           className="flex items-center gap-3 font-semibold tracking-tight text-text-primary"
         >
-          <span>Kolo</span>
-          <span className="ml-1 hidden text-[11px] font-medium uppercase tracking-[0.08em] text-muted sm:inline">
-            Ambassadors
-          </span>
+          <span>Kolo Ambassadors</span>
         </Link>
 
         <nav className="flex items-center gap-4 text-sm sm:gap-7">
