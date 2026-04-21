@@ -257,7 +257,7 @@ export default async function LandingPage() {
           </div>
           <p
             className="section-lede"
-            style={{ marginTop: -32, marginBottom: 40 }}
+            style={{ marginTop: 32, marginBottom: 40 }}
           >
             Tier is set from your KOLO balance at the close of the mini-app tap phase. If you&apos;re
             a Kolo OG, you already have a multiplier waiting. It applies to every point you earn
