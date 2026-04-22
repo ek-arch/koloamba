@@ -4,6 +4,10 @@ import { ReviewRow } from '@/components/admin/ReviewRow';
 import { ScoringGuideButton } from '@/components/admin/ScoringGuideButton';
 import type { Submission, SubmissionStatus, Tier } from '@/types';
 
+// Always re-query Supabase on every request — status changes need to be
+// visible immediately when switching between Pending / Approved / Rejected.
+export const dynamic = 'force-dynamic';
+
 type ReviewSubmission = Submission & {
   users: {
     twitter_handle: string;

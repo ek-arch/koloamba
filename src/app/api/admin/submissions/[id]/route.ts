@@ -3,6 +3,7 @@
 // Body: { status?: 'approved'|'rejected'|'pending', moderator_score?: number|null, moderator_notes?: string|null }
 
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { requireStaffApi } from '@/lib/admin-guard';
 import { supabaseAdmin } from '@/lib/supabase';
 import type { Submission, SubmissionStatus } from '@/types';
@@ -56,5 +57,10 @@ export async function PATCH(
     .single();
 
   if (dbErr) return err(dbErr.message, 500);
+
+  // Invalidate the review queue cache for ALL status tabs so the row moves
+  // between Pending / Approved / Rejected immediately on the next click.
+  revalidatePath('/admin/review');
+
   return NextResponse.json({ data: data as Submission, error: null });
 }
