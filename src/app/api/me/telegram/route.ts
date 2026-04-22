@@ -45,6 +45,29 @@ export async function POST(req: Request) {
 
   const admin = supabaseAdmin();
 
+  // Cooldown check: enforce a minimum gap between handle changes so the
+  // endpoint can't be used to enumerate the kolo_balances snapshot by
+  // probing handles and observing the returned tier/old_points. No-op
+  // writes (same handle as before) are allowed through.
+  const COOLDOWN_SECONDS = 60;
+
+  const { data: current, error: readErr } = await admin
+    .from('users')
+    .select('telegram_handle, telegram_last_change_at')
+    .eq('id', session.user.id)
+    .single();
+  if (readErr) return err(readErr.message, 500);
+
+  const isChange = (current?.telegram_handle ?? null) !== handle;
+  if (isChange && current?.telegram_last_change_at) {
+    const lastMs = new Date(current.telegram_last_change_at).getTime();
+    const elapsed = (Date.now() - lastMs) / 1000;
+    if (elapsed < COOLDOWN_SECONDS) {
+      const wait = Math.ceil(COOLDOWN_SECONDS - elapsed);
+      return err(`Please wait ${wait}s before changing your Telegram handle again.`, 429);
+    }
+  }
+
   // Look up the snapshot balance + derive tier. If handle is cleared or not in
   // the snapshot, reset to bronze/0 (treat as "never tapped").
   let balance = 0;
@@ -58,6 +81,7 @@ export async function POST(req: Request) {
   }
   const { tier, multiplier } = tierFromBalance(balance);
 
+  const nowIso = new Date().toISOString();
   const { data, error: dbErr } = await admin
     .from('users')
     .update({
@@ -65,7 +89,8 @@ export async function POST(req: Request) {
       old_points:      balance,
       tier,
       tier_multiplier: multiplier,
-      updated_at:      new Date().toISOString(),
+      updated_at:      nowIso,
+      ...(isChange ? { telegram_last_change_at: nowIso } : {}),
     })
     .eq('id', session.user.id)
     .select('telegram_handle, old_points, tier, tier_multiplier')
