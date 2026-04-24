@@ -3,7 +3,7 @@ import { auth } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase';
 import { LeaderboardTable } from '@/components/leaderboard/LeaderboardTable';
 import { AutoRefresh } from '@/components/leaderboard/AutoRefresh';
-import type { Campaign, LeaderboardRow } from '@/types';
+import type { LeaderboardRow } from '@/types';
 
 export const revalidate = 0;
 
@@ -13,19 +13,9 @@ export default async function LeaderboardPage() {
 
   const admin = supabaseAdmin();
 
-  const [board, campaign] = await Promise.all([
-    admin.from('leaderboard').select('*'),
-    admin
-      .from('campaigns')
-      .select('*')
-      .eq('status', 'active')
-      .order('start_date', { ascending: false })
-      .limit(1)
-      .maybeSingle(),
-  ]);
+  const { data: board } = await admin.from('leaderboard').select('*');
 
-  const rows = (board.data as LeaderboardRow[] | null) ?? [];
-  const pool = Number((campaign.data as Campaign | null)?.pool_amount ?? 0);
+  const rows = (board as LeaderboardRow[] | null) ?? [];
   const totalWeighted = rows.reduce((sum, r) => sum + Number(r.weighted_score), 0);
 
   return (
@@ -39,13 +29,11 @@ export default async function LeaderboardPage() {
         </div>
         <p className="section-lede" style={{ marginTop: -16, marginBottom: 32 }}>
           Updated continuously from X. Ranked by weighted score (points × tier multiplier).
-          {pool > 0 && <> Current reward pool: ${pool.toLocaleString('en-US')}.</>}
         </p>
 
         <LeaderboardTable
           rows={rows}
           totalWeighted={totalWeighted}
-          pool={pool}
           currentUserId={session?.user?.id}
         />
 

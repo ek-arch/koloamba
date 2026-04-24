@@ -1,9 +1,7 @@
 interface TickerProps {
-  pool: number;
   ambassadors: number;
   postsApproved: number;
   daysLeft?: number;
-  lastPayout?: { amount: number; handle: string } | null;
 }
 
 /**
@@ -11,18 +9,13 @@ interface TickerProps {
  * Items render 3× so the -50% translateX loop is seamless.
  */
 export function Ticker({
-  pool,
   ambassadors,
   postsApproved,
   daysLeft,
-  lastPayout,
 }: TickerProps) {
   const items: React.ReactNode[] = [
     <>
       <b>Program</b> <span>genesis · ongoing ·</span>
-    </>,
-    <>
-      <b>Pool</b> <em>${pool.toLocaleString()}</em>
     </>,
     <>
       <b>Ambassadors</b> <em>{ambassadors.toLocaleString()}</em>
@@ -35,13 +28,6 @@ export function Ticker({
     items.push(
       <>
         <b>Days left</b> <em>{daysLeft}</em>
-      </>
-    );
-  }
-  if (lastPayout) {
-    items.push(
-      <>
-        <b>Last payout</b> <em>${lastPayout.amount.toLocaleString()} → {lastPayout.handle}</em>
       </>
     );
   }

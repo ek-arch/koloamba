@@ -10,7 +10,6 @@ type TabKey = 'all' | Tier;
 interface Props {
   rows: LeaderboardRow[];
   totalWeighted: number;
-  pool: number;
   currentUserId?: string;
 }
 
@@ -19,7 +18,7 @@ interface Props {
  * Grid layout matches the prototype: 60px 2fr 1fr 1fr 1fr 1fr 40px.
  * Top-3 get accent rank numbers only when viewing "all" with no query.
  */
-export function LeaderboardTable({ rows, totalWeighted, pool, currentUserId }: Props) {
+export function LeaderboardTable({ rows, totalWeighted, currentUserId }: Props) {
   const [tab, setTab] = useState<TabKey>('all');
   const [q, setQ] = useState('');
 
@@ -96,7 +95,6 @@ export function LeaderboardTable({ rows, totalWeighted, pool, currentUserId }: P
             const isMe = r.id === currentUserId;
             const isTop3 = topHighlightActive && i < 3;
             const share = totalWeighted > 0 ? Number(r.weighted_score) / totalWeighted : 0;
-            const projected = share * pool;
 
             return (
               <div key={r.id} className={`lb-row${isMe ? ' is-me' : ''}`}>
@@ -153,11 +151,8 @@ export function LeaderboardTable({ rows, totalWeighted, pool, currentUserId }: P
 
                 <div
                   className="lb-num hide-m"
-                  style={{
-                    color:
-                      pool > 0 && projected > 0 ? 'var(--accent)' : 'var(--muted)',
-                  }}
-                  title={pool > 0 ? `Projected ≈ $${projected.toFixed(2)}` : ''}
+                  style={{ color: share > 0 ? 'var(--accent)' : 'var(--muted)' }}
+                  title={share > 0 ? `Share ≈ ${(share * 100).toFixed(2)}% of pool` : ''}
                 >
                   {Number(r.weighted_score).toFixed(1)}
                 </div>

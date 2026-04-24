@@ -12,8 +12,6 @@ interface Props {
   multiplier: number;
   /** Σ weighted scores from every OTHER ambassador — used as the denominator floor. */
   sigmaOthers: number;
-  /** Active campaign pool. */
-  pool: number;
 }
 
 const TIER_LABEL: Record<Tier, string> = {
@@ -36,7 +34,6 @@ export function RewardCalculator({
   tier,
   multiplier,
   sigmaOthers,
-  pool,
 }: Props) {
   const [target, setTarget] = useState(
     Math.min(100, Math.max(0, Math.round(initialPoints))),
@@ -44,7 +41,7 @@ export function RewardCalculator({
 
   const myWeighted = target * multiplier;
   const denom = sigmaOthers + myWeighted;
-  const share = denom > 0 ? (myWeighted / denom) * pool : 0;
+  const sharePct = denom > 0 ? (myWeighted / denom) * 100 : 0;
   const delta = Math.max(0, target - initialPoints);
 
   return (
@@ -84,8 +81,8 @@ export function RewardCalculator({
       </div>
 
       <div className="calc-result">
-        <div className="calc-result-num">${share.toFixed(0)}</div>
-        <div className="calc-result-lbl">projected share</div>
+        <div className="calc-result-num">{sharePct.toFixed(2)}%</div>
+        <div className="calc-result-lbl">projected share of pool</div>
       </div>
 
       {delta > 0 && (
@@ -128,8 +125,7 @@ export function RewardCalculator({
         className="mono-sm"
         style={{ marginTop: 12, lineHeight: 1.6, color: 'var(--muted)' }}
       >
-        ({target} × {multiplier.toFixed(1)}) ÷ ({denom.toFixed(0)}) × $
-        {pool.toLocaleString()}
+        ({target} × {multiplier.toFixed(1)}) ÷ ({denom.toFixed(0)}) × pool
       </div>
     </div>
   );

@@ -158,13 +158,11 @@ export default async function LandingPage() {
             <span className="dot" aria-hidden />
             <span>
               {status.campaignName
-                ? `${status.campaignName.toLowerCase()} · `
-                : 'active campaign · '}
+                ? status.campaignName.toLowerCase()
+                : 'active campaign'}
               {status.startDate && status.endDate
-                ? `${formatDateRange(status.startDate, status.endDate)} · `
+                ? ` · ${formatDateRange(status.startDate, status.endDate)}`
                 : ''}
-              pool{' '}
-              <b style={{ color: 'var(--ink)' }}>${status.pool.toLocaleString()}</b>
             </span>
           </div>
 
@@ -191,15 +189,6 @@ export default async function LandingPage() {
 
             <div className="hero-stats">
               <div className="stat">
-                <div className="stat-label">Pool</div>
-                <div className="stat-value">
-                  ${(status.pool / 1000).toFixed(0)}
-                  <span className="text-muted" style={{ fontSize: 20 }}>
-                    K
-                  </span>
-                </div>
-              </div>
-              <div className="stat">
                 <div className="stat-label">Ambassadors</div>
                 <div className="stat-value mono">{status.ambassadors.toLocaleString()}</div>
               </div>
@@ -220,7 +209,6 @@ export default async function LandingPage() {
 
       {/* ---------- Ticker ---------- */}
       <Ticker
-        pool={status.pool}
         ambassadors={status.ambassadors}
         postsApproved={status.postsApproved}
         daysLeft={status.daysLeft ?? undefined}
@@ -323,18 +311,18 @@ export default async function LandingPage() {
                 Σ(S × M) × <span className="c-k">Pool</span>
               </div>
               <div style={{ marginTop: 20, color: 'var(--muted)' }}>
-                <span className="c-m">{'// worked example'}</span>
+                <span className="c-m">{'// pool announced at campaign kickoff'}</span>
               </div>
               <div>
                 <span className="c-m">S =</span> 34, <span className="c-m">M =</span> 1.3× (silver)
               </div>
               <div>
-                <span className="c-m">Σ =</span> 9,420,{' '}
-                <span className="c-m">Pool =</span> ${status.pool.toLocaleString()}
+                <span className="c-m">Σ =</span> 9,420
               </div>
               <div style={{ marginTop: 6 }}>
-                <span className="c-k">Reward ≈</span> $
-                {(((34 * 1.3) / (9420 + 34 * 1.3)) * status.pool).toFixed(2)}
+                <span className="c-k">Share ≈</span>{' '}
+                {(((34 * 1.3) / (9420 + 34 * 1.3)) * 100).toFixed(3)}
+                <span className="c-m">%</span> of pool
               </div>
             </div>
           </div>

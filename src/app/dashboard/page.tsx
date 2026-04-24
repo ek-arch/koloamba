@@ -7,7 +7,7 @@ import { WalletCard } from '@/components/dashboard/WalletCard';
 import { TIER_UPPER } from '@/lib/tier';
 import { twitterCredibilityMultiplier } from '@/lib/scoring';
 import type { WalletChain, WalletToken } from '@/lib/wallet';
-import type { Campaign, LeaderboardRow, Platform, Submission, Tier } from '@/types';
+import type { LeaderboardRow, Platform, Submission, Tier } from '@/types';
 
 export const revalidate = 0;
 
@@ -40,16 +40,9 @@ export default async function DashboardPage() {
   }
 
   const admin = supabaseAdmin();
-  const [myRow, board, campaign, mySubs, balanceRow] = await Promise.all([
+  const [myRow, board, mySubs, balanceRow] = await Promise.all([
     admin.from('leaderboard').select('*').eq('id', user.id).maybeSingle(),
     admin.from('leaderboard').select('id, weighted_score'),
-    admin
-      .from('campaigns')
-      .select('*')
-      .eq('status', 'active')
-      .order('start_date', { ascending: false })
-      .limit(1)
-      .maybeSingle(),
     admin
       .from('submissions')
       .select('id, post_url, auto_score, moderator_score, final_score, status, created_at')
@@ -94,9 +87,7 @@ export default async function DashboardPage() {
   const rankIdx = sortedIds.indexOf(user.id);
   const myRank = rankIdx >= 0 ? rankIdx + 1 : totalCount + 1;
 
-  const pool = Number((campaign.data as Campaign | null)?.pool_amount ?? 0);
   const myDenom = sigmaOthers + myWeighted;
-  const projected = myDenom > 0 && pool > 0 ? (myWeighted / myDenom) * pool : 0;
 
   const submissions = (mySubs.data as Submission[] | null) ?? [];
   const approvedCount = submissions.filter((s) => s.status === 'approved').length;
@@ -166,9 +157,9 @@ export default async function DashboardPage() {
                 <div className="v">{myWeighted.toFixed(1)}</div>
               </div>
               <div>
-                <div className="k">Projected reward</div>
+                <div className="k">Share of pool</div>
                 <div className="v" style={{ color: 'var(--accent)' }}>
-                  {pool > 0 ? `$${projected.toFixed(0)}` : '—'}
+                  {myDenom > 0 ? `${((myWeighted / myDenom) * 100).toFixed(2)}%` : '—'}
                 </div>
               </div>
               <div>
@@ -340,7 +331,6 @@ export default async function DashboardPage() {
             tier={user.tier}
             multiplier={Number(user.tier_multiplier)}
             sigmaOthers={sigmaOthers}
-            pool={pool}
           />
         </div>
       </div>
