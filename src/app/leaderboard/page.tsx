@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase';
 import { LeaderboardTable } from '@/components/leaderboard/LeaderboardTable';
@@ -8,6 +9,8 @@ export const revalidate = 0;
 
 export default async function LeaderboardPage() {
   const session = await auth();
+  if (!session?.user?.id) redirect('/');
+
   const admin = supabaseAdmin();
 
   const [board, campaign] = await Promise.all([
