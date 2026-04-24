@@ -181,9 +181,11 @@ export default async function LandingPage() {
               </p>
               <div className="hero-cta">
                 {signInCta}
-                <Link href="/leaderboard" className="btn btn-ghost btn-lg">
-                  View leaderboard
-                </Link>
+                {loggedIn && (
+                  <Link href="/leaderboard" className="btn btn-ghost btn-lg">
+                    View leaderboard
+                  </Link>
+                )}
               </div>
             </div>
 
@@ -362,9 +364,11 @@ export default async function LandingPage() {
               </p>
               <div className="hero-cta" style={{ marginTop: 28 }}>
                 {signInCta}
-                <Link href="/leaderboard" className="btn btn-ghost btn-lg">
-                  See who&apos;s winning
-                </Link>
+                {loggedIn && (
+                  <Link href="/leaderboard" className="btn btn-ghost btn-lg">
+                    See who&apos;s winning
+                  </Link>
+                )}
               </div>
             </div>
 

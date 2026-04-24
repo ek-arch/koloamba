@@ -28,19 +28,21 @@ export async function Navbar() {
           >
             Home
           </Link>
-          <Link
-            href="/leaderboard"
-            className="text-muted transition-colors duration-instant hover:text-text-primary"
-          >
-            Leaderboard
-          </Link>
           {loggedIn && (
-            <Link
-              href="/dashboard"
-              className="text-muted transition-colors duration-instant hover:text-text-primary"
-            >
-              Dashboard
-            </Link>
+            <>
+              <Link
+                href="/leaderboard"
+                className="text-muted transition-colors duration-instant hover:text-text-primary"
+              >
+                Leaderboard
+              </Link>
+              <Link
+                href="/dashboard"
+                className="text-muted transition-colors duration-instant hover:text-text-primary"
+              >
+                Dashboard
+              </Link>
+            </>
           )}
           {isStaff && (
             <Link
