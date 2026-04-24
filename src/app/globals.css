@@ -190,7 +190,7 @@
 
   .stat-number {
     @apply font-semibold text-text-primary tabular-nums;
-    font-size: 58.72px;
+    font-size: 44px;
     line-height: 1.05;
     letter-spacing: -0.02em;
   }
@@ -232,11 +232,11 @@
     border-bottom: 1px solid var(--line);
   }
   .headline {
-    font-size: clamp(44px, 7.7vw, 141px);
-    line-height: 0.95;
-    letter-spacing: -0.045em;
+    font-size: clamp(36px, 5.4vw, 88px);
+    line-height: 0.98;
+    letter-spacing: -0.04em;
     font-weight: 600;
-    margin: 28px 0 0;
+    margin: 24px 0 0;
     text-wrap: balance;
   }
   .headline em {
@@ -249,9 +249,9 @@
   .headline .accent-word { color: var(--accent); }
   @media (max-width: 640px) {
     .headline {
-      font-size: clamp(43px, 11.2vw, 71px);
-      letter-spacing: -0.03em;
-      line-height: 1.3;
+      font-size: clamp(34px, 8.4vw, 54px);
+      letter-spacing: -0.025em;
+      line-height: 1.15;
     }
   }
   .hero-row {
@@ -262,10 +262,10 @@
     align-items: end;
   }
   .hero-sub {
-    font-size: 18px;
+    font-size: 15px;
     color: var(--ink-2);
     max-width: 52ch;
-    line-height: 1.45;
+    line-height: 1.5;
   }
   .hero-cta {
     display: flex;
@@ -285,12 +285,12 @@
     padding: 22px;
   }
   .stat-value {
-    font-size: 32px;
+    font-size: 26px;
     font-weight: 500;
     letter-spacing: -0.03em;
     margin-top: 8px;
   }
-  .stat-value .mono { font-size: 28px; }
+  .stat-value .mono { font-size: 22px; }
 
   /* ---------- ticker ---------- */
   .ticker {
@@ -340,11 +340,11 @@
     align-items: baseline;
   }
   .section-title {
-    font-size: clamp(44px, 5vw, 88.08px);
-    line-height: 0.98;
-    letter-spacing: -0.035em;
+    font-size: clamp(32px, 3.6vw, 60px);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
     font-weight: 500;
-    margin: 14px 0 0;
+    margin: 12px 0 0;
     text-wrap: balance;
   }
   .section-title em {
@@ -355,7 +355,7 @@
     text-underline-offset: 0.12em;
   }
   .section-lede {
-    font-size: 17px;
+    font-size: 15px;
     color: var(--muted);
     max-width: 52ch;
   }
@@ -383,10 +383,10 @@
     color: var(--muted);
   }
   .step-title {
-    font-size: 22px;
+    font-size: 18px;
     letter-spacing: -0.02em;
     font-weight: 500;
-    margin: 56px 0 12px;
+    margin: 48px 0 10px;
   }
   .step-desc {
     font-size: 14px;
@@ -429,7 +429,7 @@
   .tier:hover { border-color: var(--ink); }
   .section-block.dark .tier:hover { border-color: #ffffff; }
   .tier-mult {
-    font-size: 52px;
+    font-size: 40px;
     letter-spacing: -0.04em;
     font-weight: 500;
     line-height: 1;
@@ -587,14 +587,14 @@
     color: var(--muted);
   }
   .dash-big {
-    font-size: 84px;
+    font-size: 64px;
     line-height: 1;
-    letter-spacing: -0.045em;
+    letter-spacing: -0.04em;
     font-weight: 500;
     font-variant-numeric: tabular-nums;
   }
   .dash-big small {
-    font-size: 20px;
+    font-size: 17px;
     color: var(--muted);
     font-weight: 400;
     letter-spacing: 0;
@@ -799,7 +799,7 @@
     border-top: 1px solid var(--line);
   }
   .calc-result-num {
-    font-size: 40px;
+    font-size: 32px;
     letter-spacing: -0.035em;
     font-weight: 500;
     font-variant-numeric: tabular-nums;
@@ -996,7 +996,7 @@
     .telegram-row > div:last-child { text-align: left !important; }
     .sub-row { grid-template-columns: 1fr 80px; gap: 8px; padding: 16px; }
     .sub-row .hide-m { display: none; }
-    .dash-big { font-size: 64px; }
+    .dash-big { font-size: 48px; }
 
     /* Landing §04 "Ready?" CTA — stack + drop the vertical divider */
     .landing-cta { grid-template-columns: 1fr !important; gap: 32px !important; }
