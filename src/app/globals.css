@@ -341,7 +341,7 @@
   }
   .section-title {
     font-size: clamp(32px, 3.6vw, 60px);
-    line-height: 1.02;
+    line-height: 0.95;
     letter-spacing: -0.03em;
     font-weight: 500;
     margin: 12px 0 0;
