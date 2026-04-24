@@ -59,6 +59,17 @@ export async function POST(req: Request) {
   if (readErr) return err(readErr.message, 500);
 
   const isChange = (current?.telegram_handle ?? null) !== handle;
+
+  // Anti-fraud: once a Telegram handle is linked, it can only be changed by
+  // support. Users cannot edit or unlink it themselves — this prevents anyone
+  // from swapping handles to re-claim another account's KOLO balance / tier.
+  if (isChange && current?.telegram_handle) {
+    return err(
+      'Your Telegram handle is locked. Contact support to change or unlink it.',
+      403,
+    );
+  }
+
   if (isChange && current?.telegram_last_change_at) {
     const lastMs = new Date(current.telegram_last_change_at).getTime();
     const elapsed = (Date.now() - lastMs) / 1000;

@@ -21,6 +21,12 @@ interface RowProps {
   initialHandle: string | null;
   placeholder: string;
   hint: string;
+  /** If true, once a handle is linked it cannot be edited or unlinked from the UI. */
+  lockOnLink?: boolean;
+  /** Warning shown in a confirm() before the first link when lockOnLink is true. */
+  linkConfirm?: string;
+  /** Message shown in place of Edit/Unlink once locked. */
+  lockedHint?: string;
 }
 
 /**
@@ -41,6 +47,13 @@ export function SocialLinksCard({
         prefix="@"
         placeholder="your_telegram_handle"
         initialHandle={telegramHandle}
+        lockOnLink
+        linkConfirm={
+          'Link this Telegram handle?\n\n' +
+          'This is permanent. Once linked, you will NOT be able to change or unlink your Telegram handle yourself — only Kolo support can update it.\n\n' +
+          'Double-check the handle is correct and belongs to you before confirming.'
+        }
+        lockedHint="Telegram is locked once linked. Contact support to change it."
         valueLabel="Token balance"
         valueDisplay={
           <span
@@ -90,6 +103,9 @@ function LinkRow({
   initialHandle,
   placeholder,
   hint,
+  lockOnLink,
+  linkConfirm,
+  lockedHint,
 }: RowProps) {
   const hasValueColumn = valueLabel !== undefined;
   const router = useRouter();
@@ -98,6 +114,7 @@ function LinkRow({
   const [draft, setDraft] = useState(initialHandle ?? '');
   const [message, setMessage] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const locked = Boolean(lockOnLink && handle);
 
   async function save(next: string | null) {
     setMessage(null);
@@ -127,6 +144,9 @@ function LinkRow({
     e.preventDefault();
     const trimmed = draft.trim().replace(/^[@/]|^u\//i, '');
     if (!trimmed) return;
+    // First-time link on a locked platform: force the user to read the
+    // permanence warning and explicitly confirm before we hit the API.
+    if (lockOnLink && !handle && linkConfirm && !confirm(linkConfirm)) return;
     save(trimmed);
   }
 
@@ -214,37 +234,54 @@ function LinkRow({
               {prefix}
               {handle}
             </span>
-            <button
-              type="button"
-              className="btn btn-ghost"
-              style={{ height: 34, padding: '0 14px', fontSize: 13 }}
-              onClick={() => {
-                setEditing(true);
-                setDraft(handle ?? '');
-                setMessage(null);
-              }}
-            >
-              Edit
-            </button>
-            <button
-              type="button"
-              onClick={onUnlink}
-              className="mono-sm"
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'var(--muted)',
-                cursor: 'pointer',
-                textDecoration: 'underline',
-              }}
-            >
-              Unlink
-            </button>
+            {locked ? (
+              <span
+                className="mono-sm"
+                title={lockedHint}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  color: 'var(--muted)',
+                }}
+              >
+                <span aria-hidden>🔒</span> Locked
+              </span>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  className="btn btn-ghost"
+                  style={{ height: 34, padding: '0 14px', fontSize: 13 }}
+                  onClick={() => {
+                    setEditing(true);
+                    setDraft(handle ?? '');
+                    setMessage(null);
+                  }}
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={onUnlink}
+                  className="mono-sm"
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--muted)',
+                    cursor: 'pointer',
+                    textDecoration: 'underline',
+                  }}
+                >
+                  Unlink
+                </button>
+              </>
+            )}
           </div>
         )}
 
         <div className="mono-sm" style={{ marginTop: 4, minHeight: 16 }} aria-live="polite">
-          {message ?? hint}
+          {message ?? (locked && lockedHint ? lockedHint : hint)}
         </div>
       </div>
 
