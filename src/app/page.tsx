@@ -314,14 +314,14 @@ export default async function LandingPage() {
                 <span className="c-m">{'// pool announced at campaign kickoff'}</span>
               </div>
               <div>
-                <span className="c-m">S =</span> 34, <span className="c-m">M =</span> 1.3× (silver)
+                <span className="c-m">S =</span> 42, <span className="c-m">M =</span> 1.7× (gold)
               </div>
               <div>
-                <span className="c-m">Σ =</span> 9,420
+                <span className="c-m">Σ =</span> 685
               </div>
               <div style={{ marginTop: 6 }}>
                 <span className="c-k">Share ≈</span>{' '}
-                {(((34 * 1.3) / (9420 + 34 * 1.3)) * 100).toFixed(3)}
+                {(((42 * 1.7) / (685 + 42 * 1.7)) * 100).toFixed(2)}
                 <span className="c-m">%</span> of pool
               </div>
             </div>
