@@ -4,7 +4,7 @@ import { useState } from 'react';
 import type { Tier } from '@/types';
 
 interface Props {
-  /** Starting points from the user's own row (capped at 100). */
+  /** Starting points from the user's own row (uncapped). */
   initialPoints: number;
   /** The user's locked tier — set by their KOLO balance, not chosen here. */
   tier: Tier;
@@ -36,9 +36,13 @@ export function RewardCalculator({
   sigmaOthers,
 }: Props) {
   const [target, setTarget] = useState(
-    Math.min(100, Math.max(0, Math.round(initialPoints))),
+    Math.max(0, Math.round(initialPoints)),
   );
 
+  // Slider max scales with the user's current points so the calculator
+  // stays useful as scores grow. Floor at 200 so a fresh user has room
+  // to play with realistic targets.
+  const sliderMax = Math.max(200, Math.ceil(initialPoints * 2));
   const myWeighted = target * multiplier;
   const denom = sigmaOthers + myWeighted;
   const sharePct = denom > 0 ? (myWeighted / denom) * 100 : 0;
@@ -54,12 +58,12 @@ export function RewardCalculator({
       <div className="slider-row">
         <div className="slider-label">
           <span>target points</span>
-          <span>{target} / 100</span>
+          <span>{target}</span>
         </div>
         <input
           type="range"
           min={0}
-          max={100}
+          max={sliderMax}
           value={target}
           onChange={(e) => setTarget(Number(e.target.value))}
         />

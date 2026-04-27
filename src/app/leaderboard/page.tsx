@@ -13,7 +13,14 @@ export default async function LeaderboardPage() {
 
   const admin = supabaseAdmin();
 
-  const { data: board } = await admin.from('leaderboard').select('*');
+  // Only show ambassadors who have at least one approved submission. The
+  // `leaderboard` view LEFT JOINs all ambassadors, so signed-in users with
+  // no posts would otherwise appear at 0 pts cluttering the bottom of the
+  // table.
+  const { data: board } = await admin
+    .from('leaderboard')
+    .select('*')
+    .gt('approved_submissions', 0);
 
   const rows = (board as LeaderboardRow[] | null) ?? [];
   const totalWeighted = rows.reduce((sum, r) => sum + Number(r.weighted_score), 0);

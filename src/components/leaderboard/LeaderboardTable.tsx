@@ -86,8 +86,8 @@ export function LeaderboardTable({ rows, totalWeighted, currentUserId }: Props) 
             <div>Ambassador</div>
             <div className="hide-m">Posts</div>
             <div>Tier</div>
-            <div>Points</div>
-            <div className="hide-m">Weighted</div>
+            <div>Mindshare</div>
+            <div className="hide-m" />
             <div />
           </div>
 
@@ -147,15 +147,14 @@ export function LeaderboardTable({ rows, totalWeighted, currentUserId }: Props) 
                   </span>
                 </div>
 
-                <div className="lb-num">{Number(r.total_points).toFixed(0)}</div>
-
                 <div
-                  className="lb-num hide-m"
+                  className="lb-num"
                   style={{ color: share > 0 ? 'var(--accent)' : 'var(--muted)' }}
-                  title={share > 0 ? `Share ≈ ${(share * 100).toFixed(2)}% of pool` : ''}
+                  title={share > 0 ? `Projected share of the campaign pool` : 'No approved posts yet'}
                 >
-                  {Number(r.weighted_score).toFixed(1)}
+                  {share > 0 ? `${(share * 100).toFixed(2)}%` : '—'}
                 </div>
+                <div className="hide-m" />
 
                 <div className="lb-arrow">→</div>
               </div>

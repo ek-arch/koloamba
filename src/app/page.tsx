@@ -286,7 +286,7 @@ export default async function LandingPage() {
               <dl className="formula-legend">
                 <div>
                   <dt>S</dt>
-                  <dd>your total points (capped at 100 per campaign)</dd>
+                  <dd>your total points across approved submissions</dd>
                 </div>
                 <div>
                   <dt>M</dt>

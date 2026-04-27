@@ -32,7 +32,7 @@ export default async function SubmitPage() {
             moderator.
           </li>
           <li>A moderator can approve, reject, or override the score on any submission.</li>
-          <li>Points are capped at 100 per ambassador.</li>
+          <li>Your share of the pool grows with every approved post — no cap.</li>
         </ul>
       </div>
     </main>
