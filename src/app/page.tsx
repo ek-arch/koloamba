@@ -167,7 +167,18 @@ export default async function LandingPage() {
           </div>
 
           <h1 className="headline">
-            Kolo runs on its <span className="accent-word">ambassadors.</span>
+            Kolo{' '}
+            <span
+              style={{
+                textDecoration: 'underline',
+                textDecorationColor: 'var(--accent)',
+                textDecorationThickness: '0.08em',
+                textUnderlineOffset: '0.15em',
+              }}
+            >
+              runs
+            </span>{' '}
+            on its <span className="accent-word">ambassadors.</span>
           </h1>
 
           <div className="hero-row">
