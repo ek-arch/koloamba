@@ -104,23 +104,23 @@ const TIERS = [
 const STEPS = [
   {
     n: '01',
-    t: 'Sign in with X',
-    d: 'Connect your X account so we can verify tweet ownership and pull your TwitterScore.',
+    t: 'Sign in',
+    d: 'Connect your account so we can verify the posts you submit.',
   },
   {
     n: '02',
     t: 'Submit posts',
-    d: 'Paste the URL of a tweet, Reddit post, or Telegram message you wrote about Kolo.',
+    d: 'Paste a link to anything you posted about Kolo on socials.',
   },
   {
     n: '03',
     t: 'Get scored',
-    d: 'X is scored on engagement × credibility (up to 3× boost from TwitterScore). Reddit on engagement. Telegram is moderator-graded.',
+    d: 'Posts are scored on reach and credibility.',
   },
   {
     n: '04',
-    t: 'Earn rewards',
-    d: 'Climb the board, claim your share of the pool when the campaign ends.',
+    t: 'Claim your share',
+    d: 'Climb the board and claim your share of the pool when the campaign ends.',
   },
 ];
 
