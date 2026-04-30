@@ -167,7 +167,7 @@ export default async function LandingPage() {
           </div>
 
           <h1 className="headline">
-            Earn for what you <em>post</em> about <span className="accent-word">Kolo.</span>
+            Kolo runs on its <span className="accent-word">ambassadors.</span>
           </h1>
 
           <div className="hero-row">
