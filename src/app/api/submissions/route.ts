@@ -60,15 +60,24 @@ export async function POST(req: Request) {
     }
   }
 
-  // Duplicate check
+  // Duplicate check — same post can only be submitted once across the whole
+  // program, regardless of who submitted it. Reject before the post even hits
+  // the moderator queue so the admin board stays clean.
   const existing = await admin
     .from('submissions')
-    .select('id')
-    .eq('user_id', session.user.id)
+    .select('id, user_id')
     .eq('platform', parsed.platform)
     .eq('post_id', parsed.postId)
     .maybeSingle();
-  if (existing.data) return err('You have already submitted this post', 409);
+  if (existing.data) {
+    const mine = existing.data.user_id === session.user.id;
+    return err(
+      mine
+        ? 'You have already submitted this post'
+        : 'This post has already been submitted',
+      409,
+    );
+  }
 
   const engagement = await fetchPostMetrics(parsed);
 

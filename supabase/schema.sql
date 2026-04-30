@@ -65,8 +65,10 @@ create table if not exists submissions (
   updated_at        timestamptz default now()
 );
 
-create unique index if not exists idx_submissions_post
-  on submissions(user_id, platform, post_id);
+-- Globally unique: a (platform, post_id) can only be submitted once across
+-- the entire program, regardless of submitter.
+create unique index if not exists idx_submissions_post_global
+  on submissions(platform, post_id);
 
 -- telegram_handle is unique when present; allows multiple NULLs.
 create unique index if not exists users_telegram_handle_key
