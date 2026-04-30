@@ -173,9 +173,8 @@ export default async function LandingPage() {
           <div className="hero-row">
             <div>
               <p className="hero-sub">
-                For Kolo creators and OGs. Post about Kolo on X, Reddit, or Telegram, get scored on
-                reach and credibility, and earn your share of the pool. Your KOLO points set a tier
-                multiplier.
+                For Kolo creators and OGs. Talk about Kolo, get scored, and grab your share of the
+                pool. Your KOLO points set a tier multiplier.
               </p>
               <div className="hero-cta">
                 {signInCta}
