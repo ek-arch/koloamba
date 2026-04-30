@@ -174,7 +174,7 @@ export default async function LandingPage() {
             <div>
               <p className="hero-sub">
                 For Kolo creators and OGs. Post about Kolo on X, Reddit, or Telegram, get scored on
-                reach and credibility, and earn your share of the pool. Your KOLO balance sets a tier
+                reach and credibility, and earn your share of the pool. Your KOLO points set a tier
                 multiplier.
               </p>
               <div className="hero-cta">
@@ -242,14 +242,14 @@ export default async function LandingPage() {
           <div className="section-head">
             <div className="eyebrow">02 · tiers &amp; multipliers</div>
             <h2 className="section-title">
-              Your KOLO balance <em>travels with you.</em>
+              Your KOLO points <em>travel with you.</em>
             </h2>
           </div>
           <p
             className="section-lede"
             style={{ marginTop: 32, marginBottom: 40 }}
           >
-            Tier is set from your KOLO balance at the close of the mini-app tap phase. If you&apos;re
+            Tier is set from your KOLO points at the close of the mini-app tap phase. If you&apos;re
             a Kolo OG, you already have a multiplier waiting. It applies to every point you earn
             across ambassador campaigns, so early adopters compound over time.
           </p>
@@ -290,7 +290,7 @@ export default async function LandingPage() {
                 </div>
                 <div>
                   <dt>M</dt>
-                  <dd>tier multiplier: 1.0 / 1.3 / 1.7 (from KOLO balance)</dd>
+                  <dd>tier multiplier: 1.0 / 1.3 / 1.7 (from KOLO points)</dd>
                 </div>
                 <div>
                   <dt>Σ(S × M)</dt>

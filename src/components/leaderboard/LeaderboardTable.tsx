@@ -129,7 +129,7 @@ export function LeaderboardTable({ rows, totalWeighted, currentUserId }: Props) 
                     </div>
                     <div
                       className="mono-sm"
-                      title="Credibility boost from TwitterScore applies to X posts only. Tier multiplier (from KOLO balance) applies to the final weighted score."
+                      title="Credibility boost from TwitterScore applies to X posts only. Tier multiplier (from KOLO points) applies to the final weighted score."
                     >
                       cred ×{twitterCredibilityMultiplier(Number(r.twitter_score)).toFixed(2)}
                       {' · '}

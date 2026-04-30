@@ -80,7 +80,7 @@ export function RewardCalculator({
           className="mono-sm"
           style={{ color: 'var(--muted)', lineHeight: 1.5 }}
         >
-          Locked. Set by your KOLO balance.
+          Locked. Set by your KOLO points.
         </div>
       </div>
 
