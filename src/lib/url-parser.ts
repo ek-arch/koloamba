@@ -52,14 +52,19 @@ export function parseX(url: string): ParsedUrl {
 //   https://old.reddit.com/... , https://new.reddit.com/... , https://m.reddit.com/...
 //   https://redd.it/{id}  (short form)
 //   https://www.reddit.com/r/{sub}/comments/{postId}/comment/{commentId}  → postId+'_'+commentId
+//   https://www.reddit.com/user/{handle}/comments/{id}/{slug?}/...        (profile-routed view)
 const REDDIT_POST_RE =
-  /^https?:\/\/(?:www\.|old\.|new\.|m\.|np\.)?reddit\.com\/r\/([A-Za-z0-9_]+)\/comments\/([a-z0-9]+)(?:\/[^/?#]*)?(?:\/comment\/([a-z0-9]+))?(?:[\/?#].*)?$/i;
+  /^https?:\/\/(?:www\.|old\.|new\.|m\.|np\.)?reddit\.com\/(r|user|u)\/([A-Za-z0-9_-]+)\/comments\/([a-z0-9]+)(?:\/[^/?#]*)?(?:\/comment\/([a-z0-9]+))?(?:[\/?#].*)?$/i;
 const REDDIT_SHORT_RE = /^https?:\/\/redd\.it\/([a-z0-9]+)(?:[\/?#].*)?$/i;
 
 export function parseReddit(url: string): ParsedUrl {
   const mPost = url.match(REDDIT_POST_RE);
   if (mPost) {
-    const [, sub, postId, commentId] = mPost;
+    const [, kind, name, postId, commentId] = mPost;
+    // Profile-routed URLs (/user/{h}/ or /u/{h}/) are mirrored on Reddit at
+    // /r/u_{h}/. Normalize to that subreddit form so canonical URLs and
+    // metric fetches don't try to use the handle as a subreddit.
+    const sub = kind.toLowerCase() === 'r' ? name : `u_${name}`;
     const compositeId = commentId ? `${postId}_${commentId}` : postId;
     const canonical = commentId
       ? `https://www.reddit.com/r/${sub}/comments/${postId}/comment/${commentId}`
