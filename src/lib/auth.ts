@@ -59,14 +59,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         );
 
       // Hydrate TwitterScore on first sign-in if we haven't fetched one yet.
-      // Fire-and-forget — don't block login if the external API is slow/down.
+      // Awaited (not fire-and-forget) — Vercel serverless tears down the lambda
+      // as soon as we return, which was killing the background fetch mid-flight
+      // and leaving score=0 for some users. First login pays a small extra
+      // latency hit but score is guaranteed to be written.
       const { data: existing } = await admin
         .from('users')
         .select('twitter_score_updated_at')
         .eq('twitter_id', raw.id)
         .maybeSingle();
       if (!existing?.twitter_score_updated_at) {
-        void (async () => {
+        try {
           const result = await fetchTwitterScore(raw.username);
           if (result) {
             await admin
@@ -77,7 +80,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               })
               .eq('twitter_id', raw.id);
           }
-        })();
+        } catch (e) {
+          console.warn('[auth] twitter-score hydrate failed', e);
+        }
       }
 
       return true;
